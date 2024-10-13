@@ -4,9 +4,10 @@ import { useUser } from '@clerk/nextjs';
 
 interface InstagramMockProps {
   content: string;
+  imageUrl: string | null; // Updated to include imageUrl
 }
 
-export const InstagramMock: React.FC<InstagramMockProps> = ({ content }) => {
+export const InstagramMock: React.FC<InstagramMockProps> = ({ content, imageUrl }) => {
   const { user } = useUser();
 
   return (
@@ -17,7 +18,11 @@ export const InstagramMock: React.FC<InstagramMockProps> = ({ content }) => {
         <p className="font-bold">{user?.username || user?.firstName || "Guest"}</p>
       </div>
       <div className="flex items-center justify-center h-64 mb-3 bg-gray-200">
-        <span className="text-gray-500">Image Placeholder</span>
+        {imageUrl ? (
+          <img src={imageUrl} alt="Uploaded" className="object-cover w-full h-full" />
+        ) : (
+          <span className="text-gray-500">Image Placeholder</span>
+        )}
       </div>
       <div className="flex justify-between mb-3">
         <div className="flex space-x-4">

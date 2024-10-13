@@ -3,7 +3,7 @@ import { Twitter, Heart, MessageCircle, Repeat, Share } from "lucide-react";
 
 interface TwitterMockProps {
   content: string[];
-  
+  imageUrl: string | null; 
 }
 
 export const TwitterMock: React.FC<TwitterMockProps> = ({ content }) => {

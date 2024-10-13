@@ -125,7 +125,6 @@ export async function saveGeneratedContent(
   }
 }
 
-
 export async function getGeneratedContentHistory(
   userId: string,
   limit: number = 10
@@ -138,7 +137,6 @@ export async function getGeneratedContentHistory(
         prompt: GeneratedContent.prompt,
         contentType: GeneratedContent.contentType,
         createdAt: GeneratedContent.createdAt,
-        image: GeneratedContent.image,
       })
       .from(GeneratedContent)
       .where(
@@ -156,7 +154,6 @@ export async function getGeneratedContentHistory(
     return [];
   }
 }
-
 
 export async function createOrUpdateUser(
   clerkUserId: string,
@@ -216,4 +213,3 @@ export async function createOrUpdateUser(
     return null;
   }
 }
-

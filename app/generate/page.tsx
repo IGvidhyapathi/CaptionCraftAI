@@ -36,9 +36,6 @@ import { TwitterMock } from "@/components/social-mocks/TwitterMock";
 import { InstagramMock } from "@/components/social-mocks/InstagramMock";
 import { LinkedInMock } from "@/components/social-mocks/LinkedInMock";
 import Link from "next/link";
-import { Url } from "next/dist/shared/lib/router/router";
-
-const [imageUrl, setImageUrl] = useState<string | null>(null);
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -228,16 +225,14 @@ export default function GenerateContent() {
 
   const renderContentMock = () => {
     if (generatedContent.length === 0) return null;
-  
+
     switch (contentType) {
       case "twitter":
-        return <TwitterMock content={generatedContent} imageUrl={imageUrl} />;
+        return <TwitterMock content={generatedContent} />;
       case "instagram":
-        return (
-          <InstagramMock content={generatedContent[0]} imageUrl={imageUrl} />
-        );
+        return <InstagramMock content={generatedContent[0]} />;
       case "linkedin":
-        return <LinkedInMock content={generatedContent[0]} imageUrl={imageUrl} />;
+        return <LinkedInMock content={generatedContent[0]} />;
       default:
         return null;
     }
@@ -251,19 +246,19 @@ export default function GenerateContent() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a]">
         <div className="text-center bg-[#111111] p-8 rounded-lg shadow-lg">
-          <h1 className="mb-4 text-3xl font-bold text-white">
+          <h1 className="text-3xl font-bold text-white mb-4">
             Welcome to ThreadCraft AI
           </h1>
-          <p className="mb-6 text-gray-400">
+          <p className="text-gray-400 mb-6">
             To start generating amazing content, please sign in or create an
             account.
           </p>
           <SignInButton mode="modal">
-            <Button className="px-6 py-2 text-white bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
               Sign In / Sign Up
             </Button>
           </SignInButton>
-          <p className="mt-4 text-sm text-gray-500">
+          <p className="text-gray-500 mt-4 text-sm">
             By signing in, you agree to our Terms of Service and Privacy Policy.
           </p>
         </div>
@@ -273,42 +268,37 @@ export default function GenerateContent() {
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      setImage(file);
-      
-      // Create a URL for the uploaded image
-      const url = URL.createObjectURL(file);
-      setImageUrl(url);
+      setImage(event.target.files[0]);
     }
   };
 
   return (
-    <div className="min-h-screen text-white bg-gradient-to-br from-gray-900 to-black">
+    <div className="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
       <Navbar />
-      <div className="container px-4 py-8 mx-auto mb-8 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 mt-14 lg:grid-cols-3">
+      <div className="container mx-auto px-4 mb-8 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 mt-14 lg:grid-cols-3 gap-8">
           {/* Left sidebar - History */}
           <div className="lg:col-span-1 bg-gray-800 rounded-2xl p-6 h-[calc(100vh-12rem)] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold text-blue-400">History</h2>
-              <Clock className="w-6 h-6 text-blue-400" />
+              <Clock className="h-6 w-6 text-blue-400" />
             </div>
             <div className="space-y-4">
               {history.map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
+                  className="p-4 bg-gray-700 rounded-xl hover:bg-gray-600 transition-colors cursor-pointer"
                   onClick={() => handleHistoryItemClick(item)}
                 >
                   <div className="flex items-center mb-2">
                     {item.contentType === "twitter" && (
-                      <Twitter className="w-5 h-5 mr-2 text-blue-400" />
+                      <Twitter className="mr-2 h-5 w-5 text-blue-400" />
                     )}
                     {item.contentType === "instagram" && (
-                      <Instagram className="w-5 h-5 mr-2 text-pink-400" />
+                      <Instagram className="mr-2 h-5 w-5 text-pink-400" />
                     )}
                     {item.contentType === "linkedin" && (
-                      <Linkedin className="w-5 h-5 mr-2 text-blue-600" />
+                      <Linkedin className="mr-2 h-5 w-5 text-blue-600" />
                     )}
                     <span className="text-sm font-medium">
                       {item.contentType}
@@ -317,8 +307,8 @@ export default function GenerateContent() {
                   <p className="text-sm text-gray-300 truncate">
                     {item.prompt}
                   </p>
-                  <div className="flex items-center mt-2 text-xs text-gray-400">
-                    <Clock className="w-3 h-3 mr-1" />
+                  <div className="flex items-center text-xs text-gray-400 mt-2">
+                    <Clock className="mr-1 h-3 w-3" />
                     {new Date(item.createdAt).toLocaleString()}
                   </div>
                 </div>
@@ -327,11 +317,11 @@ export default function GenerateContent() {
           </div>
 
           {/* Main content area */}
-          <div className="space-y-6 lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             {/* Points display */}
-            <div className="flex items-center justify-between p-6 bg-gray-800 rounded-2xl">
+            <div className="bg-gray-800 p-6 rounded-2xl flex items-center justify-between">
               <div className="flex items-center">
-                <Zap className="w-8 h-8 mr-3 text-yellow-400" />
+                <Zap className="h-8 w-8 text-yellow-400 mr-3" />
                 <div>
                   <p className="text-sm text-gray-400">Available Points</p>
                   <p className="text-2xl font-bold text-yellow-400">
@@ -339,15 +329,15 @@ export default function GenerateContent() {
                   </p>
                 </div>
               </div>
-              <Button className="px-4 py-2 text-sm text-white transition-colors bg-blue-600 rounded-full hover:bg-blue-700">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded-full transition-colors">
                 <Link href="/pricing">Get More Points</Link>
               </Button>
             </div>
 
             {/* Content generation form */}
-            <div className="p-6 space-y-6 bg-gray-800 rounded-2xl">
+            <div className="bg-gray-800 p-6 rounded-2xl space-y-6">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-300">
+                <label className="block text-sm font-medium mb-2 text-gray-300">
                   Content Type
                 </label>
                 <Select
@@ -362,13 +352,13 @@ export default function GenerateContent() {
                       <SelectItem key={type.value} value={type.value}>
                         <div className="flex items-center">
                           {type.value === "twitter" && (
-                            <Twitter className="w-4 h-4 mr-2 text-blue-400" />
+                            <Twitter className="mr-2 h-4 w-4 text-blue-400" />
                           )}
                           {type.value === "instagram" && (
-                            <Instagram className="w-4 h-4 mr-2 text-pink-400" />
+                            <Instagram className="mr-2 h-4 w-4 text-pink-400" />
                           )}
                           {type.value === "linkedin" && (
-                            <Linkedin className="w-4 h-4 mr-2 text-blue-600" />
+                            <Linkedin className="mr-2 h-4 w-4 text-blue-600" />
                           )}
                           {type.label}
                         </div>
@@ -381,7 +371,7 @@ export default function GenerateContent() {
               <div>
                 <label
                   htmlFor="prompt"
-                  className="block mb-2 text-sm font-medium text-gray-300"
+                  className="block text-sm font-medium mb-2 text-gray-300"
                 >
                   Prompt
                 </label>
@@ -391,13 +381,13 @@ export default function GenerateContent() {
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   rows={4}
-                  className="w-full bg-gray-700 border-none resize-none rounded-xl"
+                  className="w-full bg-gray-700 border-none rounded-xl resize-none"
                 />
               </div>
 
               {contentType === "instagram" && (
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-300">
+                  <label className="block text-sm font-medium mb-2 text-gray-300">
                     Upload Image
                   </label>
                   <div className="flex items-center space-x-3">
@@ -410,9 +400,9 @@ export default function GenerateContent() {
                     />
                     <label
                       htmlFor="image-upload"
-                      className="flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
+                      className="cursor-pointer flex items-center justify-center px-4 py-2 bg-gray-700 rounded-xl text-sm font-medium hover:bg-gray-600 transition-colors"
                     >
-                      <Upload className="w-5 h-5 mr-2" />
+                      <Upload className="mr-2 h-5 w-5" />
                       <span>Upload Image</span>
                     </label>
                     {image && (
@@ -432,11 +422,11 @@ export default function GenerateContent() {
                   userPoints === null ||
                   userPoints < POINTS_PER_GENERATION
                 }
-                className="w-full py-3 text-white transition-colors bg-blue-600 hover:bg-blue-700 rounded-xl"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition-colors"
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Generating...
                   </>
                 ) : (
@@ -447,7 +437,7 @@ export default function GenerateContent() {
 
             {/* Generated content display */}
             {(selectedHistoryItem || generatedContent.length > 0) && (
-              <div className="p-6 space-y-4 bg-gray-800 rounded-2xl">
+              <div className="bg-gray-800 p-6 rounded-2xl space-y-4">
                 <h2 className="text-2xl font-semibold text-blue-400">
                   {selectedHistoryItem ? "History Item" : "Generated Content"}
                 </h2>
@@ -459,28 +449,28 @@ export default function GenerateContent() {
                     ).map((tweet, index) => (
                       <div
                         key={index}
-                        className="relative p-4 bg-gray-700 rounded-xl"
+                        className="bg-gray-700 p-4 rounded-xl relative"
                       >
-                        <ReactMarkdown className="mb-2 text-sm prose prose-invert max-w-none">
+                        <ReactMarkdown className="prose prose-invert max-w-none mb-2 text-sm">
                           {tweet}
                         </ReactMarkdown>
-                        <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
+                        <div className="flex justify-between items-center text-gray-400 text-xs mt-2">
                           <span>
                             {tweet.length}/{MAX_TWEET_LENGTH}
                           </span>
                           <Button
                             onClick={() => copyToClipboard(tweet)}
-                            className="p-2 text-white transition-colors bg-gray-600 rounded-full hover:bg-gray-500"
+                            className="bg-gray-600 hover:bg-gray-500 text-white rounded-full p-2 transition-colors"
                           >
-                            <Copy className="w-4 h-4" />
+                            <Copy className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="p-4 bg-gray-700 rounded-xl">
-                    <ReactMarkdown className="text-sm prose prose-invert max-w-none">
+                  <div className="bg-gray-700 p-4 rounded-xl">
+                    <ReactMarkdown className="prose prose-invert max-w-none text-sm">
                       {selectedHistoryItem
                         ? selectedHistoryItem.content
                         : generatedContent[0]}
@@ -492,8 +482,8 @@ export default function GenerateContent() {
 
             {/* Content preview */}
             {generatedContent.length > 0 && (
-              <div className="p-6 bg-gray-800 rounded-2xl">
-                <h2 className="mb-4 text-2xl font-semibold text-blue-400">
+              <div className="bg-gray-800 p-6 rounded-2xl">
+                <h2 className="text-2xl font-semibold mb-4 text-blue-400">
                   Preview
                 </h2>
                 {renderContentMock()}

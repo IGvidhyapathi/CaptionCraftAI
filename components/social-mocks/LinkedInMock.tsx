@@ -3,7 +3,7 @@ import { ThumbsUp, MessageSquare, Repeat, Send } from "lucide-react";
 
 interface LinkedInMockProps {
   content: string;
-  imageUrl: string | null; 
+  
 }
 
 export const LinkedInMock: React.FC<LinkedInMockProps> = ({ content }) => {

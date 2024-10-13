@@ -38,7 +38,7 @@ import { LinkedInMock } from "@/components/social-mocks/LinkedInMock";
 import Link from "next/link";
 import { Url } from "next/dist/shared/lib/router/router";
 
-const [imageUrl, setImageUrl] = useState<string | null>(null);
+
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -228,16 +228,14 @@ export default function GenerateContent() {
 
   const renderContentMock = () => {
     if (generatedContent.length === 0) return null;
-  
+
     switch (contentType) {
       case "twitter":
-        return <TwitterMock content={generatedContent} imageUrl={imageUrl} />;
+        return <TwitterMock content={generatedContent} />;
       case "instagram":
-        return (
-          <InstagramMock content={generatedContent[0]} imageUrl={imageUrl} />
-        );
+        return <InstagramMock content={generatedContent[0]} />;
       case "linkedin":
-        return <LinkedInMock content={generatedContent[0]} imageUrl={imageUrl} />;
+        return <LinkedInMock content={generatedContent[0]} />;
       default:
         return null;
     }
@@ -273,12 +271,7 @@ export default function GenerateContent() {
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      setImage(file);
-      
-      // Create a URL for the uploaded image
-      const url = URL.createObjectURL(file);
-      setImageUrl(url);
+      setImage(event.target.files[0]);
     }
   };
 

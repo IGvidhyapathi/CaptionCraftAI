@@ -12,7 +12,7 @@ export const InstagramMock: React.FC<InstagramMockProps> = ({ content }) => {
   return (
     <div className="max-w-md p-4 mx-auto text-black bg-white rounded-lg">
       <div className="flex items-center mb-3">
-        <div className="w-8 h-8 mr-3 bg-gray-300 rounded-full"></div>
+        <div className="w-8 h-8 mr-3 bg-gray-300 rounded-full">{user?.imageUrl}</div>
         {/* Display the user's username or a fallback */}
         <p className="font-bold">{user?.username || user?.firstName || "Guest"}</p>
       </div>

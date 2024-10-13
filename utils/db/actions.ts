@@ -138,6 +138,7 @@ export async function getGeneratedContentHistory(
         prompt: GeneratedContent.prompt,
         contentType: GeneratedContent.contentType,
         createdAt: GeneratedContent.createdAt,
+        image: GeneratedContent.image,
       })
       .from(GeneratedContent)
       .where(

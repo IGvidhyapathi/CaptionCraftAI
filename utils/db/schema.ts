@@ -41,4 +41,5 @@ export const GeneratedContent = pgTable("generated_content", {
   prompt: text("prompt").notNull(),
   contentType: varchar("content_type", { length: 50 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  image: text("image"),
 });

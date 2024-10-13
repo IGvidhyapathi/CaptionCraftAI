@@ -105,7 +105,7 @@ export async function saveGeneratedContent(
   userId: string,
   content: string,
   prompt: string,
-  contentType: string,
+  contentType: string
 ) {
   try {
     const [savedContent] = await db

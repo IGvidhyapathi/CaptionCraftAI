@@ -79,7 +79,9 @@ export default function GettingStarted() {
               <li>Read through the detailed documentation available in the <span className="text-blue-400"><strong>API Reference</strong></span> section to maximize your use of these features.</li>
             </ul>
             <div className="flex justify-start">
+              <Link href="/docs/api-reference">
               <Button className="px-4 py-2 m-4 text-white transition duration-300 bg-blue-600 rounded hover:bg-blue-500">API Reference</Button>
+           </Link>
             </div>
           </div>
         </section>

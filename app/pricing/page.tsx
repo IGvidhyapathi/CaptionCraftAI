@@ -34,8 +34,8 @@ const pricingPlans = [
   },
   {
     name: "Enterprise",
-    price: "Custom",
-    priceId: null,
+    price: "3999",
+    priceId: "price_1Q9liVKwC82kR8GZl6tkDoOM",
     features: [
       { name: "Unlimited AI-generated posts", available: true },
       { name: "All social media platforms", available: true },
@@ -104,7 +104,9 @@ export default function PricingPage() {
               </h2>
               <p className="mb-6 text-4xl font-bold text-white">
                 ₹{plan.price}
-                <span className="text-lg font-normal text-gray-400">/month</span>
+                <span className="text-lg font-normal text-gray-400">
+                  {plan.name === "Enterprise" ? "/year" : "/month"}
+                </span>
               </p>
               <ul className="flex-grow mb-8">
                 {plan.features.map((feature, featureIndex) => (

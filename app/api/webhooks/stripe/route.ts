@@ -79,6 +79,10 @@ export async function POST(req: Request) {
           plan = "Pro";
           pointsToAdd = 300;
           break;
+          case "price_1Q9liVKwC82kR8GZl6tkDoOM":
+            plan = "custom";
+            pointsToAdd = 1000;
+            break;
         default:
           console.error("Unknown price ID", { priceId });
           return NextResponse.json(

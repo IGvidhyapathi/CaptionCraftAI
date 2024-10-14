@@ -80,7 +80,7 @@ export async function POST(req: Request) {
           pointsToAdd = 300;
           break;
           case "price_1Q9liVKwC82kR8GZl6tkDoOM":
-            plan = "custom";
+            plan = "Enterprise";
             pointsToAdd = 1000;
             break;
         default:

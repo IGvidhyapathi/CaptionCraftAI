@@ -43,7 +43,7 @@ export default function GettingStarted() {
               <li>Provide specific details about your desired output, including tone, style, and any relevant keywords.</li>
               <li>Review the settings to ensure everything is configured correctly before saving.</li>
             </ul>
-            <img src="/getting-started/dashboard.png" alt="Setting Up Project" className="mt-4 rounded shadow" />
+            <img src="/dashboard.png" alt="Setting Up Project" className="mt-4 rounded shadow" />
           </div>
 
           <div>

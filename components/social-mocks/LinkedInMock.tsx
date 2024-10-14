@@ -3,17 +3,16 @@ import { ThumbsUp, MessageSquare, Repeat, Send } from "lucide-react";
 
 interface LinkedInMockProps {
   content: string;
-  imageUrl: string | null; 
 }
 
 export const LinkedInMock: React.FC<LinkedInMockProps> = ({ content }) => {
   return (
-    <div className="max-w-md p-4 mx-auto text-black bg-white rounded-lg">
+    <div className="bg-white text-black rounded-lg p-4 max-w-md mx-auto">
       <div className="flex items-center mb-3">
-        <div className="w-12 h-12 mr-3 bg-gray-300 rounded-full"></div>
+        <div className="w-12 h-12 bg-gray-300 rounded-full mr-3"></div>
         <div>
           <p className="font-bold">Your Name</p>
-          <p className="text-sm text-gray-500">Your Title • 1st</p>
+          <p className="text-gray-500 text-sm">Your Title • 1st</p>
         </div>
       </div>
       <p className="mb-4">{content}</p>

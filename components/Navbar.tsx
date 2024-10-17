@@ -10,6 +10,7 @@ import {
 } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { Menu, X, Zap } from "lucide-react";
+import { throttle } from "lodash"; // Import throttle to optimize scroll performance
 
 export function Navbar() {
   const { userId } = useAuth();
@@ -17,9 +18,9 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = throttle(() => {
       setIsScrolled(window.scrollY > 10);
-    };
+    }, 100); // Throttle the scroll event to improve performance
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -34,7 +35,7 @@ export function Navbar() {
         <div className="flex flex-wrap items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <Zap className="w-8 h-8 text-blue-800" />
+              <Zap className="w-8 h-8 text-blue-800" aria-hidden="true" />
               <span className="text-xl font-bold text-white sm:text-2xl">
                 CaptionCraft AI
               </span>
@@ -43,11 +44,12 @@ export function Navbar() {
           <button
             className="text-white sm:hidden focus:outline-none"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle Menu"
           >
             {isMenuOpen ? (
-              <X className="w-6 h-6" />
+              <X className="w-6 h-6 transition-transform duration-200" />
             ) : (
-              <Menu className="w-6 h-6" />
+              <Menu className="w-6 h-6 transition-transform duration-200" />
             )}
           </button>
           <div
@@ -61,12 +63,13 @@ export function Navbar() {
                   key={item}
                   href={`/${item.toLowerCase()}`}
                   className="relative py-2 text-gray-300 transition-colors hover:text-white sm:py-0 group"
+                  aria-label={`Go to ${item} page`}
                 >
                   {item}
                   <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                 </Link>
               ))}
-              {userId && (
+              {userId ? (
                 <Link
                   href="/generate"
                   className="relative py-2 text-gray-300 transition-colors hover:text-white sm:py-0 group"
@@ -74,15 +77,21 @@ export function Navbar() {
                   Dashboard
                   <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                 </Link>
-              )}
+              ) : null}
               <SignedOut>
                 <SignInButton mode="modal">
-                  <button className="mt-2 text-gray-300 transition-colors hover:text-white sm:mt-0">
+                  <button
+                    className="mt-2 text-gray-300 transition-colors hover:text-white sm:mt-0"
+                    aria-label="Sign In"
+                  >
                     Sign In
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="px-4 py-2 mt-2 text-white transition-colors bg-blue-600 rounded-full hover:bg-blue-700 sm:mt-0">
+                  <button
+                    className="px-4 py-2 mt-2 text-white transition-colors bg-blue-600 rounded-full hover:bg-blue-700 sm:mt-0"
+                    aria-label="Sign Up"
+                  >
                     Sign Up
                   </button>
                 </SignUpButton>
@@ -94,6 +103,7 @@ export function Navbar() {
                       avatarBox: "w-10 h-10",
                     },
                   }}
+                  aria-label="User Menu"
                 />
               </SignedIn>
             </div>

@@ -14,10 +14,13 @@ import {
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Navbar } from "@/components/Navbar";
-import {Spinner} from "@nextui-org/spinner";
+
+interface AuthResult {
+  userId: string | null; // Define the type for userId
+}
 
 export default function Home() {
-  const { userId } = auth();
+  const { userId }: AuthResult = auth(); // Explicitly type userId
 
   return (
     <div className="min-h-screen pt-20 overflow-hidden text-gray-100 bg-gradient-to-b from-black to-gray-900">
@@ -41,44 +44,42 @@ export default function Home() {
           <h1 className="mb-6 text-4xl font-extrabold text-transparent sm:text-5xl lg:text-6xl bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
             AI-Powered Social Media Content Generator
           </h1>
-          <p className="max-w-2xl mx-auto mb-10 text-xl dark:text-gray-300 text-black">
+          <p className="max-w-2xl mx-auto mb-10 text-xl text-black dark:text-gray-300">
             Create engaging content for Twitter, Instagram, and LinkedIn with
             cutting-edge AI technology.
           </p>
-          {userId? (
-          <div className="flex justify-center space-x-4">
-            <Button
-              asChild
-              className="px-8 py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3937c8] rounded-full hover:bg-[#292886] hover:scale-105"
-            >
-              <Link href="/generate">Start Creating</Link>
-            </Button>
-            <Button
-              asChild
-              className="px-8 py-3 text-lg text-[#3937c8] transition duration-300 ease-in-out bg-transparent border border-[#3937c8] rounded-full hover:bg-[#3937c8] hover:text-white"
-            >
-              <Link href="#features">Learn More</Link>
-            </Button>
-            
-          </div>
-          ):(
-          <div className="flex justify-center space-x-4">
-            <SignInButton mode="modal">
-            <Button
-              asChild
-              className="px-8 py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3937c8] rounded-full hover:bg-[#292886] hover:scale-105"
-            >
-              <Link href="/generate">Start Creating</Link>
-            </Button>
-            </SignInButton>
-            <Button
-              asChild
-              className="px-8 py-3 text-lg text-[#3937c8] transition duration-300 ease-in-out bg-transparent border border-[#3937c8] rounded-full hover:bg-[#3937c8] hover:text-white"
-            >
-              <Link href="#features">Learn More</Link>
-            </Button>
-            
-          </div>
+          {userId ? (
+            <div className="flex justify-center space-x-4">
+              <Button
+                asChild
+                className="px-8 py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3937c8] rounded-full hover:bg-[#292886] hover:scale-105"
+              >
+                <Link href="/generate">Start Creating</Link>
+              </Button>
+              <Button
+                asChild
+                className="px-8 py-3 text-lg text-[#3937c8] transition duration-300 ease-in-out bg-transparent border border-[#3937c8] rounded-full hover:bg-[#3937c8] hover:text-white"
+              >
+                <Link href="#features">Learn More</Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="flex justify-center space-x-4">
+              <SignInButton mode="modal">
+                <Button
+                  asChild
+                  className="px-8 py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3937c8] rounded-full hover:bg-[#292886] hover:scale-105"
+                >
+                  <Link href="/generate">Start Creating</Link>
+                </Button>
+              </SignInButton>
+              <Button
+                asChild
+                className="px-8 py-3 text-lg text-[#3937c8] transition duration-300 ease-in-out bg-transparent border border-[#3937c8] rounded-full hover:bg-[#3937c8] hover:text-white"
+              >
+                <Link href="#features">Learn More</Link>
+              </Button>
+            </div>
           )}
         </div>
 
@@ -205,23 +206,12 @@ export default function Home() {
           <h2 className="mb-8 text-4xl font-bold text-white">
             Ready to revolutionize your social media strategy?
           </h2>
-          {userId ? (
-            <Button
-              asChild
-              className="px-10 py-4 text-lg text-white transition duration-300 ease-in-out transform bg-blue-600 rounded-full hover:bg-blue-700 hover:scale-105"
-            >
-              <Link href="/generate">
-                Generate Content Now <ArrowRightIcon className="w-5 h-5 ml-2" />
-              </Link>
-            </Button>
-          ) : (
-            <SignUpButton mode="modal">
-              <Button className="px-10 py-4 text-lg text-white transition duration-300 ease-in-out transform bg-blue-600 rounded-full hover:bg-blue-700 hover:scale-105">
-                Get Started Free <ArrowRightIcon className="w-5 h-5 ml-2" />
-              </Button>
-            </SignUpButton>
-          )}
-          <p className="mt-4 text-gray-400">No credit card required</p>
+          <Button
+            asChild
+            className="px-8 py-4 text-lg text-white transition duration-300 ease-in-out transform bg-[#3937c8] rounded-full hover:bg-[#292886] hover:scale-105"
+          >
+            <Link href="/generate">Get Started</Link>
+          </Button>
         </div>
       </main>
     </div>

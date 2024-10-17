@@ -24,9 +24,9 @@ export const sendWelcomeEmail = async (toEmail: string, name: string) => {
   await client.send({
     from: sender,
     to: [{ email: toEmail }],
-    subject: "Welcome to ThreadCraft AI!",
+    subject: "Welcome to Captioncraft AI!",
     html: `
-      <h1>Welcome to ThreadCraft AI, ${name}!</h1>
+      <h1>Welcome to CaptionCraft AI, ${name}!</h1>
       <p>We're excited to have you on board. Get started by...</p>
     `,
   });

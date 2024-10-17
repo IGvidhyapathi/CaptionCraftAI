@@ -5,9 +5,9 @@ import { MailtrapClient } from "mailtrap";
  * and obtain a token that is authorized to send from the domain.
  */
 
-const TOKEN = "05bf3445ae1a9814ecf445a6272a9db7";
+const TOKEN = "a0537b2c6e5062ca1a132910b45e81e6";
 const SENDER_EMAIL = "hello@demomailtrap.com";
-const RECIPIENT_EMAIL = "mendsalbert@gmail.com";
+const RECIPIENT_EMAIL = "c.vidhyapathi1555@gmail.com";
 
 if (!TOKEN) {
   throw new Error("MAILTRAP_TOKEN environment variable is not set");
@@ -21,8 +21,8 @@ client
   .send({
     from: sender,
     to: [{ email: RECIPIENT_EMAIL }],
-    subject: "Hello from Mailtrap!",
-    text: "Welcome to Mailtrap Sending!",
+    subject: "Hello from Captioncraft AI",
+    text: "Start you Content generation journey with us and develop your socialmedia with our AI !",
   })
   .then(console.log)
   .catch(console.error);

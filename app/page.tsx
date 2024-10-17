@@ -12,17 +12,18 @@ import {
   RocketIcon,
 } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
-import { SignUpButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Navbar } from "@/components/Navbar";
+import {Spinner} from "@nextui-org/spinner";
 
 export default function Home() {
   const { userId } = auth();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-gray-100 overflow-hidden pt-20">
+    <div className="min-h-screen pt-20 overflow-hidden text-gray-100 bg-gradient-to-b from-black to-gray-900">
       <Navbar />
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <main className="container relative px-4 mx-auto sm:px-6 lg:px-8">
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 animate-float">
           <SparklesIcon className="w-8 h-8 text-yellow-400 opacity-50" />
@@ -35,37 +36,58 @@ export default function Home() {
         </div>
 
         {/* Hero Section */}
-        <div className="text-center py-20 lg:py-32 relative">
-          <RocketIcon className="w-16 h-16 text-purple-500 mx-auto mb-6 animate-bounce" />
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+        <div className="relative py-20 text-center lg:py-32">
+          <RocketIcon className="w-16 h-16 mx-auto mb-6 text-purple-500 animate-bounce" />
+          <h1 className="mb-6 text-4xl font-extrabold text-transparent sm:text-5xl lg:text-6xl bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
             AI-Powered Social Media Content Generator
           </h1>
-          <p className="text-xl mb-10 text-gray-300 max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto mb-10 text-xl dark:text-gray-300 text-black">
             Create engaging content for Twitter, Instagram, and LinkedIn with
             cutting-edge AI technology.
           </p>
+          {userId? (
           <div className="flex justify-center space-x-4">
             <Button
               asChild
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105"
+              className="px-8 py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3937c8] rounded-full hover:bg-[#292886] hover:scale-105"
             >
               <Link href="/generate">Start Creating</Link>
             </Button>
             <Button
               asChild
-              className="bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-full text-lg transition duration-300 ease-in-out"
+              className="px-8 py-3 text-lg text-[#3937c8] transition duration-300 ease-in-out bg-transparent border border-[#3937c8] rounded-full hover:bg-[#3937c8] hover:text-white"
             >
               <Link href="#features">Learn More</Link>
             </Button>
+            
           </div>
+          ):(
+          <div className="flex justify-center space-x-4">
+            <SignInButton mode="modal">
+            <Button
+              asChild
+              className="px-8 py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3937c8] rounded-full hover:bg-[#292886] hover:scale-105"
+            >
+              <Link href="/generate">Start Creating</Link>
+            </Button>
+            </SignInButton>
+            <Button
+              asChild
+              className="px-8 py-3 text-lg text-[#3937c8] transition duration-300 ease-in-out bg-transparent border border-[#3937c8] rounded-full hover:bg-[#3937c8] hover:text-white"
+            >
+              <Link href="#features">Learn More</Link>
+            </Button>
+            
+          </div>
+          )}
         </div>
 
         {/* Features Section */}
         <div className="py-20" id="features">
-          <h2 className="text-3xl font-bold mb-16 text-center text-white">
+          <h2 className="mb-16 text-3xl font-bold text-center text-white">
             Supercharge Your Social Media Presence
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
+          <div className="grid max-w-5xl grid-cols-1 gap-10 mx-auto md:grid-cols-3">
             {[
               {
                 title: "Twitter Threads",
@@ -90,11 +112,11 @@ export default function Home() {
             ].map((feature, index) => (
               <div
                 key={index}
-                className="p-8 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1"
+                className="p-8 transition duration-300 ease-in-out transform shadow-lg rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 hover:shadow-xl hover:-translate-y-1"
               >
                 <div className="flex flex-col items-center text-center">
                   {feature.icon}
-                  <h3 className="text-2xl font-semibold mb-3 text-white">
+                  <h3 className="mb-3 text-2xl font-semibold text-white">
                     {feature.title}
                   </h3>
                   <p className="text-gray-300">{feature.description}</p>
@@ -105,7 +127,7 @@ export default function Home() {
         </div>
 
         {/* Benefits Section */}
-        <div className="py-20 bg-gray-900 rounded-3xl my-20 relative">
+        <div className="relative py-20 my-20 bg-gray-900 rounded-3xl">
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-3xl">
             <svg
               className="absolute w-full h-full"
@@ -134,10 +156,10 @@ export default function Home() {
             </defs>
           </div>
           <div className="relative z-10">
-            <h2 className="text-3xl font-bold mb-12 text-center text-white">
+            <h2 className="mb-12 text-3xl font-bold text-center text-white">
               Why Choose Our AI Content Generator?
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="grid max-w-4xl grid-cols-1 gap-8 mx-auto md:grid-cols-2">
               {[
                 "Save time and effort on content creation",
                 "Consistently produce high-quality posts",
@@ -147,7 +169,7 @@ export default function Home() {
                 "Scale your social media presence effortlessly",
               ].map((benefit, index) => (
                 <div key={index} className="flex items-center space-x-3">
-                  <CheckCircleIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
+                  <CheckCircleIcon className="flex-shrink-0 w-6 h-6 text-green-500" />
                   <span className="text-gray-300">{benefit}</span>
                 </div>
               ))}
@@ -156,7 +178,7 @@ export default function Home() {
         </div>
 
         {/* CTA Section */}
-        <div className="text-center py-20 relative">
+        <div className="relative py-20 text-center">
           <div className="absolute top-10 right-10 animate-spin-slow">
             <svg
               className="w-20 h-20 text-blue-500 opacity-20"
@@ -180,22 +202,22 @@ export default function Home() {
               />
             </svg>
           </div>
-          <h2 className="text-4xl font-bold mb-8 text-white">
+          <h2 className="mb-8 text-4xl font-bold text-white">
             Ready to revolutionize your social media strategy?
           </h2>
           {userId ? (
             <Button
               asChild
-              className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105"
+              className="px-10 py-4 text-lg text-white transition duration-300 ease-in-out transform bg-blue-600 rounded-full hover:bg-blue-700 hover:scale-105"
             >
               <Link href="/generate">
-                Generate Content Now <ArrowRightIcon className="ml-2 h-5 w-5" />
+                Generate Content Now <ArrowRightIcon className="w-5 h-5 ml-2" />
               </Link>
             </Button>
           ) : (
             <SignUpButton mode="modal">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105">
-                Get Started Free <ArrowRightIcon className="ml-2 h-5 w-5" />
+              <Button className="px-10 py-4 text-lg text-white transition duration-300 ease-in-out transform bg-blue-600 rounded-full hover:bg-blue-700 hover:scale-105">
+                Get Started Free <ArrowRightIcon className="w-5 h-5 ml-2" />
               </Button>
             </SignUpButton>
           )}

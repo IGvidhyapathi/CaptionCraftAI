@@ -25,6 +25,9 @@ body {
     text-wrap: balance;
   }
 }
+body::-webkit-scrollbar{
+  display: none;
+}
 
 @layer base {
   :root {
@@ -75,6 +78,7 @@ body {
 @layer base {
   * {
     @apply border-border;
+    
   }
   body {
     @apply bg-background text-foreground;

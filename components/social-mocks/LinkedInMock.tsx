@@ -1,18 +1,25 @@
 import React from "react";
 import { ThumbsUp, MessageSquare, Repeat, Send } from "lucide-react";
+import { useUser } from '@clerk/nextjs';
 
 interface LinkedInMockProps {
   content: string;
 }
 
 export const LinkedInMock: React.FC<LinkedInMockProps> = ({ content }) => {
+  const { user } = useUser();
   return (
-    <div className="bg-white text-black rounded-lg p-4 max-w-md mx-auto">
+    <div className="max-w-md p-4 mx-auto text-black bg-white rounded-lg">
       <div className="flex items-center mb-3">
-        <div className="w-12 h-12 bg-gray-300 rounded-full mr-3"></div>
+      <img
+          src={user?.imageUrl || "/default-avatar.png"}  // Fallback to a default avatar if imageUrl is not available
+          alt="Profile"
+          className="w-8 h-8 mr-3 bg-gray-300 rounded-full"
+        />
+        
         <div>
-          <p className="font-bold">Your Name</p>
-          <p className="text-gray-500 text-sm">Your Title • 1st</p>
+        <p className="font-bold">{user?.username || user?.firstName || "Guest"}</p>
+          <p className="text-sm text-gray-500">{user?.firstName}• 1st</p>
         </div>
       </div>
       <p className="mb-4">{content}</p>

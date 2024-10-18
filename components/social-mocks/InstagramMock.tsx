@@ -12,7 +12,7 @@ export const InstagramMock: React.FC<InstagramMockProps> = ({ content }) => {
   return (
     <div className="max-w-md p-4 mx-auto text-black bg-white rounded-lg">
       <div className="flex items-center mb-3">
-        <img
+      <img
           src={user?.imageUrl || "/default-avatar.png"}  // Fallback to a default avatar if imageUrl is not available
           alt="Profile"
           className="w-8 h-8 mr-3 bg-gray-300 rounded-full"

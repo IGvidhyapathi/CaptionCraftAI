@@ -17,6 +17,7 @@ const pricingPlans = [
       { name: "Basic analytics", available: true },
       { name: "Priority support", available: false },
       { name: "Advanced analytics", available: false },
+      { name: "Payment Refund", available: false },
     ],
   },
   {
@@ -30,6 +31,7 @@ const pricingPlans = [
       { name: "Priority support", available: true },
       { name: "Custom AI model training", available: false },
       { name: "Dedicated account manager", available: false },
+      { name: "Payment Refund", available: false },
     ],
   },
   {
@@ -43,6 +45,7 @@ const pricingPlans = [
       { name: "Enhanced Captions", available: true },
       { name: "Complete Support ", available: true },
       { name: "Dedicated account manager", available: true },
+      { name: "Payment Refund", available: true },
     ],
   },
 ];

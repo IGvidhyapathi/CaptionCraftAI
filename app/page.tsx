@@ -17,6 +17,7 @@ import { Navbar } from "@/components/Navbar";
 import { FollowPointer } from "@/components/ui/following-pointer";
 import { Cover } from "@/components/ui/cover";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { GlobeDemo } from "./globe";
 
 interface AuthResult {
   userId: string | null; // Define the type for userId
@@ -179,15 +180,29 @@ export default function Home() {
               />
             </svg>
           </div>
-          <h2 className="mb-8 text-4xl font-bold text-white">
+          <h2 className="mt-0 mb-8 text-4xl font-bold text-white">
             Ready to revolutionize your social media strategy?
           </h2>
+          <div className="mt-0 mb-5" >
+          <GlobeDemo/>
+          </div>
+          {userId? (
           <Button
             asChild
             className="px-8 py-4 text-lg text-white transition duration-300 ease-in-out transform bg-[#3355cf] rounded-full hover:bg-[#292886] hover:scale-105"
           >
-            <Link href="#features">Get Started Now!</Link>
+            <Link href="#">Get Started Now!</Link>
           </Button>
+          ):(
+            <SignInButton mode="modal">
+          <Button
+            asChild
+            className="px-8 py-4 text-lg text-white transition duration-300 ease-in-out transform bg-[#3355cf] rounded-full hover:bg-[#292886] hover:scale-105"
+          >
+            <Link href="#">Get Started Now!</Link>
+          </Button>
+          </SignInButton>
+          )}
         </div>
       </main>
     </div>

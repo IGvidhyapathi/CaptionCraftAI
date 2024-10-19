@@ -5,6 +5,9 @@ import { Navbar } from "@/components/Navbar";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
+import React from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
 
 const pricingPlans = [
   {
@@ -87,6 +90,7 @@ export default function PricingPage() {
   };
 
   return (
+    
     <div className="min-h-screen text-gray-100 bg-black">
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
@@ -94,47 +98,83 @@ export default function PricingPage() {
           Pricing Plans
         </h1>
         <div className="grid max-w-6xl grid-cols-1 gap-8 mx-auto md:grid-cols-3">
-          {pricingPlans.map((plan, index) => (
-            <div
-              key={index}
-              className="flex flex-col p-8 border border-gray-800 rounded-lg"
-            >
-              <h2 className="mb-4 text-2xl font-bold text-white">
-                {plan.name}
-              </h2>
-              <p className="mb-6 text-4xl font-bold text-white">
-                ₹{plan.price}
-                <span className="text-lg font-normal text-gray-400">
-                  {plan.name === "Enterprise" ? "/year" : "/month"}
-                </span>
-              </p>
-              <ul className="flex-grow mb-8">
-                {plan.features.map((feature, featureIndex) => (
-                  <li
-                    key={featureIndex}
-                    className="flex items-center mb-3 text-gray-300"
-                  >
-                    {/* Conditional rendering for unavailable features */}
-                    {!feature.available ? (
-                      <X className="w-5 h-5 mr-2 text-red-500" />
-                    ) : (
-                      <CheckIcon className="w-5 h-5 mr-2 text-green-500" />
-                    )}
-                    {feature.name}
-                  </li>
-                ))}
-              </ul>
-              <Button
-                onClick={() => plan.priceId && handleSubscribe(plan.priceId)}
-                disabled={isLoading || !plan.priceId}
-                className="w-full text-black bg-white hover:bg-gray-200"
+          {pricingPlans.map((plan, index) => {
+            const [hovered, setHovered] = useState(false);
+
+            return (
+              <div
+                key={index}
+                className="relative flex flex-col p-8 overflow-hidden border border-gray-800 rounded-lg group"
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
               >
-                {isLoading ? "Processing..." : "Choose Plan"}
-              </Button>
-            </div>
-          ))}
+                {/* Text and Features */}
+                <div className="relative z-20">
+                  <h2 className="mb-4 text-2xl font-bold text-white">
+                    {plan.name}
+                  </h2>
+                  <p className="mb-6 text-4xl font-bold text-white">
+                    ₹{plan.price}
+                    <span className="text-lg font-normal text-gray-400">
+                      {plan.name === "Enterprise" ? "/year" : "/month"}
+                    </span>
+                  </p>
+                  <ul className="flex-grow mb-8">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li
+                        key={featureIndex}
+                        className="flex items-center mb-3 text-gray-300"
+                      >
+                        {!feature.available ? (
+                          <X className="w-5 h-5 mr-2 text-red-500" />
+                        ) : (
+                          <CheckIcon className="w-5 h-5 mr-2 text-green-500" />
+                        )}
+                        {feature.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Hover Background Effect */}
+                <AnimatePresence>
+                  {hovered && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 z-10 w-full h-full"
+                    >
+                      <CanvasRevealEffect
+                        animationSpeed={5}
+                        containerClassName="bg-transparent"
+                        colors={[
+                          [59, 130, 246],
+                          [139, 92, 246],
+                        ]}
+                        opacities={[0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.4, 0.4, 0.4, 1]}
+                        dotSize={2}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Button */}
+                <Button
+                  onClick={() => plan.priceId && handleSubscribe(plan.priceId)}
+                  disabled={isLoading || !plan.priceId}
+                  className="relative z-30 w-full text-black bg-white hover:bg-gray-200"
+                >
+                  {isLoading ? "Processing..." : "Choose Plan"}
+                </Button>
+              </div>
+            );
+          })}
         </div>
       </main>
-    </div>
+      </div>
   );
 }
+
+
+

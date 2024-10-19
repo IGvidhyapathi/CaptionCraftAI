@@ -22,11 +22,13 @@
     "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.1",
+    "@react-three/fiber": "^8.17.10",
     "@stripe/stripe-js": "^4.4.0",
     "@tabler/icons-react": "^3.19.0",
     "@tsparticles/engine": "^3.5.0",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.5.0",
+    "@types/three": "^0.169.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.33.0",
@@ -45,7 +47,8 @@
     "stripe": "^16.10.0",
     "svix": "^1.33.0",
     "tailwind-merge": "^2.5.3",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "three": "^0.169.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.10",

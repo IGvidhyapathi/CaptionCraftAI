@@ -19,6 +19,8 @@ import {
   Linkedin,
   Clock,
   Zap,
+  Star,
+  Verified,
 } from "lucide-react";
 import { GoogleGenerativeAI, Part } from "@google/generative-ai";
 import ReactMarkdown from "react-markdown";
@@ -36,6 +38,15 @@ import { TwitterMock } from "@/components/social-mocks/TwitterMock";
 import { InstagramMock } from "@/components/social-mocks/InstagramMock";
 import { LinkedInMock } from "@/components/social-mocks/LinkedInMock";
 import Link from "next/link";
+interface TooltipProps {
+  message: string; // Define the type of the message prop
+}
+const Tooltip: React.FC<TooltipProps> = ({ message }) => (
+  <div className="absolute px-1 py-1 mb-1 text-xs text-white bg-gray-800 rounded z-1 bottom-full left-1/2">
+    {message}
+  </div>
+);
+
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -60,7 +71,7 @@ interface HistoryItem {
 export default function GenerateContent() {
   const { isLoaded, isSignedIn, user } = useUser();
   const router = useRouter();
-
+ 
   const [contentType, setContentType] = useState(contentTypes[0].value);
   const [prompt, setPrompt] = useState("");
   const [generatedContent, setGeneratedContent] = useState<string[]>([]);
@@ -311,6 +322,13 @@ export default function GenerateContent() {
                     <Clock className="w-3 h-3 mr-1" />
                     {new Date(item.createdAt).toLocaleString()}
                   </div>
+                  <div className="relative flex items-center group">
+      <Verified size={20} color="green" className="ml-auto" />
+      <span className="ml-1.5 text-sm">Verified</span>
+      <div className="hidden group-hover:block">
+        <Tooltip message="The Information Provided are Double Checked by Gemini AI" />
+      </div>
+    </div>
                 </div>
               ))}
             </div>

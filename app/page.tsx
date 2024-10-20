@@ -14,7 +14,6 @@ import {
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Navbar } from "@/components/Navbar";
-import { FollowPointer } from "@/components/ui/following-pointer";
 import { Cover } from "@/components/ui/cover";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 

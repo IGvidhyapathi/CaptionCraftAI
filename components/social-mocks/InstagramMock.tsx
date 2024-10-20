@@ -1,13 +1,21 @@
 import React from "react";
-import { Heart, MessageCircle, Send, Bookmark } from "lucide-react";
+import { Heart, MessageCircle, Send, Bookmark, Copy } from "lucide-react";
 import { useUser } from '@clerk/nextjs';
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { useToast } from "@/components//hooks/use-toast"
 
 interface InstagramMockProps {
   content: string;
 }
 
 export const InstagramMock: React.FC<InstagramMockProps> = ({ content }) => {
+  const { toast } = useToast()
   const { user } = useUser();
+  const copyToClipboard = (text: string) => {
+    
+    navigator.clipboard.writeText(text);
+  };
 
   return (
     <div className="max-w-md p-4 mx-auto text-black bg-white rounded-lg">
@@ -24,13 +32,26 @@ export const InstagramMock: React.FC<InstagramMockProps> = ({ content }) => {
       </div>
       <div className="flex justify-between mb-3">
         <div className="flex space-x-4">
-          <Heart size={24} />
+          <Heart color="red" fill="red" size={24} />
           <MessageCircle size={24} />
           <Send size={24} />
         </div>
         <Bookmark size={24} />
       </div>
       <p className="text-sm">{content}</p>
+      <div className="pt-2">
+      <Button className="block px-4 py-2 ml-auto text-white bg-black rounded "
+      variant="outline"
+      onClick={() =>{
+        toast({
+          title: "Caption Copied",
+        })
+        copyToClipboard(content)}}
+       >
+        
+      <Link href="https://www.instagram.com">Post on Instagram</Link>
+      </Button>
+      </div>
     </div>
   );
 };

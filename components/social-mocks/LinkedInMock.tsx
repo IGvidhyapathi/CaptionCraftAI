@@ -1,6 +1,9 @@
 import React from "react";
 import { ThumbsUp, MessageSquare, Repeat, Send } from "lucide-react";
 import { useUser } from '@clerk/nextjs';
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { useToast } from "@/components//hooks/use-toast"
 
 interface LinkedInMockProps {
   content: string;
@@ -8,6 +11,10 @@ interface LinkedInMockProps {
 
 export const LinkedInMock: React.FC<LinkedInMockProps> = ({ content }) => {
   const { user } = useUser();
+  const { toast } = useToast()
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
   return (
     <div className="max-w-md p-4 mx-auto text-black bg-white rounded-lg">
       <div className="flex items-center mb-3">
@@ -28,6 +35,18 @@ export const LinkedInMock: React.FC<LinkedInMockProps> = ({ content }) => {
         <MessageSquare size={18} />
         <Repeat size={18} />
         <Send size={18} />
+      </div>
+      <div className="pt-3">
+      <Button className="block px-4 py-2 ml-auto text-white bg-black rounded "
+      variant="outline"
+      onClick={() =>{
+        toast({
+          title: "Thread Copied",
+        })
+        copyToClipboard(content)}}
+       >
+      <Link href="https://www.linkedin.com/feed/">Share on Linkedin</Link>
+      </Button>
       </div>
     </div>
   );

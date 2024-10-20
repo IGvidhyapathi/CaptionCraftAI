@@ -31,7 +31,7 @@ export const LinkedInMock: React.FC<LinkedInMockProps> = ({ content }) => {
       </div>
       <p className="mb-4">{content}</p>
       <div className="flex justify-between text-gray-500">
-        <ThumbsUp size={18} />
+        <ThumbsUp color="#0081FB" fill="#0081FB" size={18} />
         <MessageSquare size={18} />
         <Repeat size={18} />
         <Send size={18} />

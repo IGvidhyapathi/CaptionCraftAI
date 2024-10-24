@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
 
+
 const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Caption Craft AI",

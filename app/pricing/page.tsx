@@ -8,6 +8,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
+import { toast } from "@/components/hooks/use-toast";
 
 const pricingPlans = [
   {
@@ -56,6 +57,11 @@ export default function PricingPage() {
 
   const handleSubscribe = async (priceId: string | null) => {
     if (!isSignedIn) {
+      toast({
+        variant:"destructive",
+        title: "Uh oh! Something went wrong.",
+        description: " Please Log in to Subscribe",
+      })
       return;
     }
 

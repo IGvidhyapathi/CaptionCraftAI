@@ -35,7 +35,7 @@ export function Navbar() {
         <div className="flex flex-wrap items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <Zap className="w-8 h-8 text-blue-800" aria-hidden="true" />
+              <img src="/icons/logo.svg" className="w-8 h-8 text-blue-800" aria-hidden="true" />
               <span className="text-xl font-bold text-white sm:text-2xl">
                 CaptionCraft AI
               </span>

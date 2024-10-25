@@ -3,7 +3,7 @@
 "use client"; // Ensure this is a client component
 import Link from "next/link";
 import { Button } from "@/components/ui/button"; // Adjust the path according to your project structure
-import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, useAuth } from "@clerk/nextjs";
 import { Navbar } from "@/components/Navbar"; // Adjust the path according to your project structure
 
 export default function ApiReference() {
@@ -27,7 +27,9 @@ export default function ApiReference() {
             <SignedOut>
               {/* Show button only if user is not signed in */}
               <Button className="mt-4 text-white transition duration-300 bg-blue-600 rounded hover:bg-blue-500">
-                <Link href="/signup">Sign Up for API Updates!</Link>
+                <SignInButton mode="modal">
+                <Link href="#">Sign Up for API Updates!</Link>
+                </SignInButton>
               </Button>
             </SignedOut>
             <SignedIn>

@@ -16,6 +16,7 @@ import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Navbar } from "@/components/Navbar";
 import { Cover } from "@/components/ui/cover";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { FollowerPointerCard } from "@/components/ui/following-pointer";
 
 interface AuthResult {
   userId: string | null; // Define the type for userId

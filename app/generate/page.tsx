@@ -21,6 +21,9 @@
       Zap,
       Star,
       Verified,
+      RecycleIcon,
+      Trash,
+      Trash2,
     } from "lucide-react";
     import { GoogleGenerativeAI, Part } from "@google/generative-ai";
     import ReactMarkdown from "react-markdown";
@@ -46,8 +49,6 @@
     } from "@/components/ui/tooltip"
   import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
   import { toast } from "@/components/hooks/use-toast";
-  import { ToastAction } from "@/components/ui/toast"
-  import { Toast } from "@radix-ui/react-toast";
 
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -126,6 +127,16 @@
           setHistory(contentHistory);
         }
       };
+      const handleClear = () => {
+        setSelectedHistoryItem(null);
+        setGeneratedContent([]);
+        setPrompt("") // Clear the typed prompt
+        console.log("Cleared selected history content and typed prompt");
+        toast({
+          variant:"default",
+          title: "Prompt Cleared"
+        })
+      };
 
       const handleGenerate = async () => {
         if (
@@ -141,9 +152,6 @@
           })
           return;
         }
-      
-        
-
         setIsLoading(true);
         try {
           const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
@@ -291,7 +299,9 @@
       };
 
       return (
+      
         <div className="min-h-screen text-white bg-gradient-to-br from-gray-900 to-black">
+           
           <Navbar />
           <div className="container px-4 py-8 mx-auto mb-8 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-8 mt-14 lg:grid-cols-3">
@@ -466,6 +476,13 @@
                       `Generate Content (${POINTS_PER_GENERATION} points)`
                     )}
                   </Button>
+                  <Button
+                  onClick={handleClear}
+                  variant={"default"}
+                   className="block px-4 py-2 ml-auto bg-red-800 hover:bg-red-600"
+                   >
+                   Clear Prompt
+                    </Button>
                 </div>
 
                 {/* Generated content display */}
@@ -525,6 +542,8 @@
               </div>
             </div>
           </div>
-        </div>
+          </div>
+          
+        
       );
     }

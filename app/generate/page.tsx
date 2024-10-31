@@ -24,6 +24,9 @@
       RecycleIcon,
       Trash,
       Trash2,
+      Youtube,
+      Flame,
+      LucideShieldAlert,
     } from "lucide-react";
     import { GoogleGenerativeAI, Part } from "@google/generative-ai";
     import ReactMarkdown from "react-markdown";
@@ -57,6 +60,8 @@
       { value: "twitter", label: "Twitter Thread" },
       { value: "instagram", label: "Instagram Caption" },
       { value: "linkedin", label: "LinkedIn Post" },
+      { value: "youtube", label: "Youtube Description" },
+      
     ];
 
     const MAX_TWEET_LENGTH = 280;
@@ -160,6 +165,11 @@
           if (contentType === "twitter") {
             promptText +=
               " Provide a thread of 5 tweets, each under 280 characters.";
+          }
+          let youtube = `Generate ${contentType} content about "${prompt}".`;
+          if (contentType === "youtube") {
+            promptText +=
+              " Provide a complete youtube description without any breaks only paragraph";
           }
 
           let imagePart: Part | null = null;
@@ -328,6 +338,9 @@
                         {item.contentType === "linkedin" && (
                           <Linkedin className="w-5 h-5 mr-2 text-blue-600" />
                         )}
+                        {item.contentType === "youtube" && (
+                          <Youtube className="w-5 h-5 mr-2 text-red-600" />
+                        )}
                         <span className="text-sm font-medium">
                           {item.contentType}
                         </span>
@@ -383,8 +396,9 @@
                 {/* Content generation form */}
                 <div className="p-6 space-y-6 bg-gray-800 rounded-2xl">
                   <div>
-                    <label className="block mb-2 text-sm font-medium text-gray-300">
+                    <label className=" flex mb-2 text-sm font-medium text-gray-300">
                       Content Type
+                      <div className="ml-auto w-8 h-8 text-green-500"></div>
                     </label>
                     <Select
                       onValueChange={setContentType}
@@ -405,6 +419,9 @@
                               )}
                               {type.value === "linkedin" && (
                                 <Linkedin className="w-4 h-4 mr-2 text-blue-600" />
+                              )}
+                              {type.value === "youtube" && (
+                                <Youtube className="w-4 h-4 mr-2 text-red-600" />
                               )}
                               {type.label}
                             </div>
@@ -479,7 +496,7 @@
                   <Button
                   onClick={handleClear}
                   variant={"default"}
-                   className="block px-4 py-2 ml-auto bg-red-800 hover:bg-red-600"
+                   className="block px-4 py-2 ml-auto text-white bg-red-600 hover:bg-red-700"
                    >
                    Clear Prompt
                     </Button>

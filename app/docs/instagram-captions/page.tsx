@@ -1,20 +1,25 @@
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import Link from 'next/link'; // Import Link from next/link
+import Link from 'next/link';
+import { FaComment, FaHashtag, FaSmile, FaChartLine } from "react-icons/fa"; // Example icons
 
 export default function InstagramCaptions() {
   return (
-    <div className="min-h-screen text-gray-100 bg-black">
+    <div className="min-h-screen text-gray-100 bg-gradient-to-b from-black to-gray-800">
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
         <h1 className="mb-12 text-5xl font-bold text-center text-white">
           Generating Instagram Captions
         </h1>
-        <section className="max-w-4xl mx-auto space-y-12">
-          <div>
-            <h2 className="mb-4 text-3xl font-semibold text-white">
-              Step 1: Know Your Brand Voice
-            </h2>
+        <section className="max-w-4xl mx-auto grid gap-8 md:grid-cols-2">
+          {/* Step 1 */}
+          <div className="bg-gray-900 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
+                <FaComment />
+              </div>
+              <h2 className="ml-4 text-2xl font-semibold text-white">Step 1: Know Your Brand Voice</h2>
+            </div>
             <p className="text-gray-400">
               Understanding your brand voice is essential for creating engaging Instagram captions. Here are ways to define it:
             </p>
@@ -25,10 +30,14 @@ export default function InstagramCaptions() {
             </ul>
           </div>
 
-          <div>
-            <h2 className="mb-4 text-3xl font-semibold text-white">
-              Step 2: Craft Compelling Captions
-            </h2>
+          {/* Step 2 */}
+          <div className="bg-gray-900 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
+                <FaHashtag />
+              </div>
+              <h2 className="ml-4 text-2xl font-semibold text-white">Step 2: Craft Compelling Captions</h2>
+            </div>
             <p className="text-gray-400">
               A good caption grabs attention and encourages engagement. Here are tips for crafting effective captions:
             </p>
@@ -40,10 +49,14 @@ export default function InstagramCaptions() {
             </ul>
           </div>
 
-          <div>
-            <h2 className="mb-4 text-3xl font-semibold text-white">
-              Step 3: Utilize Emojis and Formatting
-            </h2>
+          {/* Step 3 */}
+          <div className="bg-gray-900 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
+                <FaSmile />
+              </div>
+              <h2 className="ml-4 text-2xl font-semibold text-white">Step 3: Utilize Emojis and Formatting</h2>
+            </div>
             <p className="text-gray-400">
               Emojis and formatting can enhance the appeal of your captions. Consider these strategies:
             </p>
@@ -54,10 +67,14 @@ export default function InstagramCaptions() {
             </ul>
           </div>
 
-          <div>
-            <h2 className="mb-4 text-3xl font-semibold text-white">
-              Step 4: Analyze and Iterate
-            </h2>
+          {/* Step 4 */}
+          <div className="bg-gray-900 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
+                <FaChartLine />
+              </div>
+              <h2 className="ml-4 text-2xl font-semibold text-white">Step 4: Analyze and Iterate</h2>
+            </div>
             <p className="text-gray-400">
               Once you’ve published your captions, it’s important to analyze their performance and iterate on your approach:
             </p>
@@ -66,19 +83,18 @@ export default function InstagramCaptions() {
               <li>Use Instagram Insights to understand what types of captions resonate.</li>
               <li>Experiment with different styles and lengths to see what works best.</li>
             </ul>
-            <img src="/instagram/instagram.png" alt="Analyzing and Iterating Captions" className="mt-4 rounded shadow" />
           </div>
         </section>
 
         <div className="flex justify-between mt-10">
           {/* Next Page button */}
           <Link href="/docs">
-          <Button className="px-4 py-2 text-white transition duration-300 bg-blue-600 rounded hover:bg-blue-500">Go to Docs</Button>
+            <Button className="px-4 py-2 text-white transition duration-300 bg-blue-600 rounded hover:bg-blue-500">Go to Docs</Button>
           </Link>
           {/* Docs page button aligned to steps */}
           <div className="flex justify-end w-full">
             <Link href="/docs/linkedin-posts">
-            <Button className="px-4 py-2 text-white transition duration-300 bg-green-600 rounded hover:bg-green-500">Next Page</Button>
+              <Button className="px-4 py-2 text-white transition duration-300 bg-green-600 rounded hover:bg-green-500">Next Page</Button>
             </Link>
           </div>
         </div>

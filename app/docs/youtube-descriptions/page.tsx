@@ -1,33 +1,33 @@
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
-import { FaPencilAlt, FaShareSquare, FaUsers, FaHashtag } from "react-icons/fa"; // Icons for each step
+import { FaLightbulb, FaSearch, FaBullhorn, FaClock } from "react-icons/fa"; // Icons for each step
 
-export default function LinkedInCaptions() {
+export default function YouTubeDescriptions() {
   return (
     <div className="min-h-screen text-gray-100 bg-gradient-to-b from-black to-gray-900">
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
         <h1 className="mb-12 text-3xl font-bold text-center text-white">
-          Writing LinkedIn Captions
+          Crafting YouTube Descriptions
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Step 1 */}
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
-                <FaPencilAlt />
+                <FaLightbulb />
               </div>
               <h2 className="ml-4 text-2xl font-semibold text-white">Step 1</h2>
             </div>
-            <h3 className="text-xl font-semibold text-white">Start with a Hook</h3>
+            <h3 className="text-xl font-semibold text-white">Start with a Catchy Intro</h3>
             <p className="text-gray-400">
-              Capture attention right away with a compelling opening. Consider these tips:
+              A strong introduction can help grab viewers' attention. Here’s how to create an engaging intro:
             </p>
             <ul className="ml-5 text-gray-400 list-disc">
-              <li>Use a thought-provoking question.</li>
-              <li>Share a surprising statistic.</li>
-              <li>Start with a relatable scenario.</li>
+              <li>Include a brief summary of the video's content.</li>
+              <li>Highlight the unique value viewers can expect.</li>
+              <li>Keep it concise and appealing.</li>
             </ul>
           </div>
 
@@ -35,18 +35,18 @@ export default function LinkedInCaptions() {
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
-                <FaShareSquare />
+                <FaSearch />
               </div>
               <h2 className="ml-4 text-2xl font-semibold text-white">Step 2</h2>
             </div>
-            <h3 className="text-xl font-semibold text-white">Keep It Professional</h3>
+            <h3 className="text-xl font-semibold text-white">Use Relevant Keywords</h3>
             <p className="text-gray-400">
-              Your audience is professional, so ensure your tone reflects that:
+              Keywords help with SEO and make your video discoverable. Try these tips:
             </p>
             <ul className="ml-5 text-gray-400 list-disc">
-              <li>Avoid slang and overly casual language.</li>
-              <li>Be concise and clear in your message.</li>
-              <li>Use industry-relevant terminology.</li>
+              <li>Research popular keywords in your niche.</li>
+              <li>Incorporate keywords naturally in your description.</li>
+              <li>Use phrases that match viewers' search intent.</li>
             </ul>
           </div>
 
@@ -54,18 +54,18 @@ export default function LinkedInCaptions() {
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
-                <FaUsers />
+                <FaBullhorn />
               </div>
               <h2 className="ml-4 text-2xl font-semibold text-white">Step 3</h2>
             </div>
-            <h3 className="text-xl font-semibold text-white">Engage with Your Audience</h3>
+            <h3 className="text-xl font-semibold text-white">Add Calls to Action</h3>
             <p className="text-gray-400">
-              Encourage interaction and conversation by:
+              Encourage viewers to engage further with clear CTAs:
             </p>
             <ul className="ml-5 text-gray-400 list-disc">
-              <li>Asking for thoughts or opinions.</li>
-              <li>Inviting others to share their experiences.</li>
-              <li>Tagging relevant people to spark engagement.</li>
+              <li>Invite viewers to like, subscribe, and comment.</li>
+              <li>Include links to relevant playlists or videos.</li>
+              <li>Add a CTA for additional resources or downloads.</li>
             </ul>
           </div>
 
@@ -73,19 +73,20 @@ export default function LinkedInCaptions() {
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
-                <FaHashtag />
+                <FaClock />
               </div>
               <h2 className="ml-4 text-2xl font-semibold text-white">Step 4</h2>
             </div>
-            <h3 className="text-xl font-semibold text-white">Use Hashtags Wisely</h3>
+            <h3 className="text-xl font-semibold text-white">Organize with Timestamps</h3>
             <p className="text-gray-400">
-              Hashtags can improve visibility. Here’s how to use them effectively:
+              Timestamps can improve viewer experience. Here’s how:
             </p>
             <ul className="ml-5 text-gray-400 list-disc">
-              <li>Research trending hashtags in your industry.</li>
-              <li>Limit to 3-5 relevant hashtags.</li>
-              <li>Include them at the end of your caption.</li>
+              <li>Break down content with time markers for easy navigation.</li>
+              <li>Highlight main sections or chapters for clarity.</li>
+              <li>Place timestamps at the beginning of your description.</li>
             </ul>
+            <img src="/youtube/youtube.png" alt="Organizing with Timestamps" className="mt-4 rounded-lg shadow-lg border border-gray-700" />
           </div>
         </div>
 

@@ -28,6 +28,12 @@ const docsSections = [
     link: "/docs/linkedin-posts",
   },
   {
+    title: "Youtube Descriptions",
+    description:
+      "Create a detailed Descriptions for you amazing youtube videos with AI assisstances",
+    link: "/docs/youtube-descriptions",
+  },
+  {
     title: "API Reference",
     description:
       "Detailed documentation for integrating our AI content generation into your applications.",

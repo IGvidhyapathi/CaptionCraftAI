@@ -11,11 +11,11 @@ export default function YouTubeDescriptions() {
         <h1 className="mb-12 text-3xl font-bold text-center text-white">
           Crafting YouTube Descriptions
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Step 1 */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+          <div className="p-6 transition-transform transform bg-gray-800 rounded-lg shadow-lg hover:scale-105">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
+              <div className="flex items-center justify-center w-12 h-12 text-2xl text-white bg-red-600 rounded-full">
                 <FaLightbulb />
               </div>
               <h2 className="ml-4 text-2xl font-semibold text-white">Step 1</h2>
@@ -32,9 +32,9 @@ export default function YouTubeDescriptions() {
           </div>
 
           {/* Step 2 */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+          <div className="p-6 transition-transform transform bg-gray-800 rounded-lg shadow-lg hover:scale-105">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
+              <div className="flex items-center justify-center w-12 h-12 text-2xl text-white bg-red-600 rounded-full">
                 <FaSearch />
               </div>
               <h2 className="ml-4 text-2xl font-semibold text-white">Step 2</h2>
@@ -51,9 +51,9 @@ export default function YouTubeDescriptions() {
           </div>
 
           {/* Step 3 */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+          <div className="p-6 transition-transform transform bg-gray-800 rounded-lg shadow-lg hover:scale-105">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
+              <div className="flex items-center justify-center w-12 h-12 text-2xl text-white bg-red-600 rounded-full">
                 <FaBullhorn />
               </div>
               <h2 className="ml-4 text-2xl font-semibold text-white">Step 3</h2>
@@ -70,9 +70,9 @@ export default function YouTubeDescriptions() {
           </div>
 
           {/* Step 4 */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+          <div className="p-6 transition-transform transform bg-gray-800 rounded-lg shadow-lg hover:scale-105">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
+              <div className="flex items-center justify-center w-12 h-12 text-2xl text-white bg-red-600 rounded-full">
                 <FaClock />
               </div>
               <h2 className="ml-4 text-2xl font-semibold text-white">Step 4</h2>
@@ -86,19 +86,18 @@ export default function YouTubeDescriptions() {
               <li>Highlight main sections or chapters for clarity.</li>
               <li>Place timestamps at the beginning of your description.</li>
             </ul>
-            <img src="/youtube/youtube.png" alt="Organizing with Timestamps" className="mt-4 rounded-lg shadow-lg border border-gray-700" />
           </div>
         </div>
 
         <div className="flex justify-between mt-10">
           <Link href="/docs">
-            <Button className="px-4 py-2 text-white transition duration-300 bg-blue-600 rounded hover:bg-blue-500 shadow-md">
+            <Button className="px-4 py-2 text-white transition duration-300 bg-red-600 rounded shadow-md hover:bg-red-500">
               Go to Docs
             </Button>
           </Link>
           <div className="flex justify-end w-full">
             <Link href="/docs/api-reference">
-              <Button className="px-4 py-2 text-white transition duration-300 bg-green-600 rounded hover:bg-green-500 shadow-md">
+              <Button className="px-4 py-2 text-white transition duration-300 bg-red-600 rounded shadow-md hover:bg-red-500">
                 Previous Page
               </Button>
             </Link>

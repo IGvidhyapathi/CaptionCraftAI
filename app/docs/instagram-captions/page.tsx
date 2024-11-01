@@ -1,100 +1,105 @@
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
-import { FaComment, FaHashtag, FaSmile, FaChartLine } from "react-icons/fa"; // Example icons
+import { FaHeart, FaHashtag, FaPen, FaClock } from "react-icons/fa"; // Updated icons for each step
 
 export default function InstagramCaptions() {
   return (
-    <div className="min-h-screen text-gray-100 bg-gradient-to-b from-black to-gray-800">
+    <div className="min-h-screen text-gray-100 bg-gradient-to-b from-black to-gray-900">
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
-        <h1 className="mb-12 text-5xl font-bold text-center text-white">
-          Generating Instagram Captions
+        <h1 className="mb-12 text-3xl font-bold text-center text-white">
+          Crafting Engaging Instagram Captions
         </h1>
-        <section className="max-w-4xl mx-auto grid gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Step 1 */}
-          <div className="bg-gray-900 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+          <div className="p-6 transition-transform transform bg-gray-800 rounded-lg shadow-lg hover:scale-105">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
-                <FaComment />
+              <div className="flex items-center justify-center w-12 h-12 text-2xl text-white bg-pink-600 rounded-full">
+                <FaHeart />
               </div>
-              <h2 className="ml-4 text-2xl font-semibold text-white">Step 1: Know Your Brand Voice</h2>
+              <h2 className="ml-4 text-2xl font-semibold text-white">Step 1</h2>
             </div>
+            <h3 className="text-xl font-semibold text-white">Start with a Hook</h3>
             <p className="text-gray-400">
-              Understanding your brand voice is essential for creating engaging Instagram captions. Here are ways to define it:
+              Capture attention in the first few words:
             </p>
             <ul className="ml-5 text-gray-400 list-disc">
-              <li>Identify key adjectives that describe your brand (e.g., playful, professional).</li>
-              <li>Review past captions to understand what resonates with your audience.</li>
-              <li>Experiment with different tones and styles to find what feels authentic.</li>
+              <li>Use a question or bold statement.</li>
+              <li>Appeal to emotions or curiosity.</li>
+              <li>Keep it relevant and engaging.</li>
             </ul>
           </div>
 
           {/* Step 2 */}
-          <div className="bg-gray-900 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+          <div className="p-6 transition-transform transform bg-gray-800 rounded-lg shadow-lg hover:scale-105">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
+              <div className="flex items-center justify-center w-12 h-12 text-2xl text-white bg-pink-600 rounded-full">
                 <FaHashtag />
               </div>
-              <h2 className="ml-4 text-2xl font-semibold text-white">Step 2: Craft Compelling Captions</h2>
+              <h2 className="ml-4 text-2xl font-semibold text-white">Step 2</h2>
             </div>
+            <h3 className="text-xl font-semibold text-white">Use Relevant Hashtags</h3>
             <p className="text-gray-400">
-              A good caption grabs attention and encourages engagement. Here are tips for crafting effective captions:
+              Hashtags increase discoverability on Instagram:
             </p>
             <ul className="ml-5 text-gray-400 list-disc">
-              <li>Start with a hook that captivates your audience.</li>
-              <li>Incorporate relevant hashtags to increase visibility.</li>
-              <li>Ask questions or prompt users to engage with your post.</li>
-              <li>Keep it concise, but ensure it conveys the message effectively.</li>
+              <li>Research trending hashtags in your niche.</li>
+              <li>Use a mix of popular and unique hashtags.</li>
+              <li>Limit to 5-10 relevant hashtags.</li>
             </ul>
           </div>
 
           {/* Step 3 */}
-          <div className="bg-gray-900 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+          <div className="p-6 transition-transform transform bg-gray-800 rounded-lg shadow-lg hover:scale-105">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
-                <FaSmile />
+              <div className="flex items-center justify-center w-12 h-12 text-2xl text-white bg-pink-600 rounded-full">
+                <FaPen />
               </div>
-              <h2 className="ml-4 text-2xl font-semibold text-white">Step 3: Utilize Emojis and Formatting</h2>
+              <h2 className="ml-4 text-2xl font-semibold text-white">Step 3</h2>
             </div>
+            <h3 className="text-xl font-semibold text-white">Write Clear CTAs</h3>
             <p className="text-gray-400">
-              Emojis and formatting can enhance the appeal of your captions. Consider these strategies:
+              Encourage interactions through CTAs:
             </p>
             <ul className="ml-5 text-gray-400 list-disc">
-              <li>Use emojis to convey emotions or add visual interest.</li>
-              <li>Break up long texts with line breaks and bullet points for readability.</li>
-              <li>Highlight important information using capitalization or symbols.</li>
+              <li>Ask followers to share thoughts in the comments.</li>
+              <li>Invite followers to save or share the post.</li>
+              <li>Use engaging phrases like “Tap to see more!”</li>
             </ul>
           </div>
 
           {/* Step 4 */}
-          <div className="bg-gray-900 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+          <div className="p-6 transition-transform transform bg-gray-800 rounded-lg shadow-lg hover:scale-105">
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl">
-                <FaChartLine />
+              <div className="flex items-center justify-center w-12 h-12 text-2xl text-white bg-pink-600 rounded-full">
+                <FaClock />
               </div>
-              <h2 className="ml-4 text-2xl font-semibold text-white">Step 4: Analyze and Iterate</h2>
+              <h2 className="ml-4 text-2xl font-semibold text-white">Step 4</h2>
             </div>
+            <h3 className="text-xl font-semibold text-white">Post at Optimal Times</h3>
             <p className="text-gray-400">
-              Once you’ve published your captions, it’s important to analyze their performance and iterate on your approach:
+              Timing can affect your post’s reach:
             </p>
             <ul className="ml-5 text-gray-400 list-disc">
-              <li>Monitor engagement metrics (likes, comments, shares) for your posts.</li>
-              <li>Use Instagram Insights to understand what types of captions resonate.</li>
-              <li>Experiment with different styles and lengths to see what works best.</li>
+              <li>Know when your audience is most active.</li>
+              <li>Experiment with different posting times.</li>
+              <li>Use Instagram Insights to track engagement.</li>
             </ul>
           </div>
-        </section>
+        </div>
 
         <div className="flex justify-between mt-10">
-          {/* Next Page button */}
           <Link href="/docs">
-            <Button className="px-4 py-2 text-white transition duration-300 bg-blue-600 rounded hover:bg-blue-500">Go to Docs</Button>
+            <Button className="px-4 py-2 text-white transition duration-300 bg-pink-600 rounded shadow-md hover:bg-pink-500">
+              Go to Docs
+            </Button>
           </Link>
-          {/* Docs page button aligned to steps */}
           <div className="flex justify-end w-full">
             <Link href="/docs/linkedin-posts">
-              <Button className="px-4 py-2 text-white transition duration-300 bg-green-600 rounded hover:bg-green-500">Next Page</Button>
+              <Button className="px-4 py-2 text-white transition duration-300 bg-purple-600 rounded shadow-md hover:bg-purple-500">
+                Previous Page
+              </Button>
             </Link>
           </div>
         </div>

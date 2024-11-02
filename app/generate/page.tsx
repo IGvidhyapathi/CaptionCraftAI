@@ -43,6 +43,8 @@
     import { TwitterMock } from "@/components/social-mocks/TwitterMock";
     import { InstagramMock } from "@/components/social-mocks/InstagramMock";
     import { LinkedInMock } from "@/components/social-mocks/LinkedInMock";
+    import { PinterestMock } from "@/components/social-mocks/PinterestMock";
+    import { YoutubeMock } from "@/components/social-mocks/YoutubeMock";
     import Link from "next/link";
     import {
       Tooltip,
@@ -52,6 +54,7 @@
     } from "@/components/ui/tooltip"
   import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
   import { toast } from "@/components/hooks/use-toast";
+import { FaPinterest } from "react-icons/fa";
 
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -61,7 +64,7 @@
       { value: "instagram", label: "Instagram Caption" },
       { value: "linkedin", label: "LinkedIn Post" },
       { value: "youtube", label: "Youtube Description" },
-      
+      { value: "pinterest", label: "Pinterest" },
     ];
 
     const MAX_TWEET_LENGTH = 280;
@@ -185,6 +188,7 @@
               };
               reader.readAsDataURL(image);
             });
+            
 
             const base64Data = imageData.split(",")[1];
             if (base64Data) {
@@ -198,12 +202,41 @@
             promptText +=
               " Describe the image and incorporate it into the caption.";
           }
+          
+          if (contentType === "pinterest" && image) {
+            const reader = new FileReader();
+            const imageData = await new Promise<string>((resolve) => {
+              reader.onload = (e) => {
+                if (e.target && typeof e.target.result === "string") {
+                  resolve(e.target.result);
+                } else {
+                  resolve("");
+                }
+              };
+              reader.readAsDataURL(image);
+            });
+            
+
+            const base64Data = imageData.split(",")[1];
+            if (base64Data) {
+              imagePart = {
+                inlineData: {
+                  data: base64Data,
+                  mimeType: image.type,
+                },
+              };
+            }
+            promptText +=
+              "Describe the image and incorporate it into the caption.";
+          }
 
           const parts: (string | Part)[] = [promptText];
           if (imagePart) parts.push(imagePart);
 
           const result = await model.generateContent(parts);
           const generatedText = result.response.text();
+
+          
 
           let content: string[];
           if (contentType === "twitter") {
@@ -269,6 +302,10 @@
             return <InstagramMock content={generatedContent[0]} />;
           case "linkedin":
             return <LinkedInMock content={generatedContent[0]} />;
+          case "pinterest":
+              return <PinterestMock content={generatedContent[0]} />;
+          case "youtube":
+            return <YoutubeMock content={generatedContent[0]} />;
           default:
             return null;
         }
@@ -341,6 +378,9 @@
                         {item.contentType === "youtube" && (
                           <Youtube className="w-5 h-5 mr-2 text-red-600" />
                         )}
+                        {item.contentType === "pinterest" && (
+                          <FaPinterest className="w-5 h-5 mr-2 text-red-600" />
+                        )}
                         <span className="text-sm font-medium">
                           {item.contentType}
                         </span>
@@ -396,9 +436,9 @@
                 {/* Content generation form */}
                 <div className="p-6 space-y-6 bg-gray-800 rounded-2xl">
                   <div>
-                    <label className=" flex mb-2 text-sm font-medium text-gray-300">
+                    <label className="flex mb-2 text-sm font-medium text-gray-300 ">
                       Content Type
-                      <div className="ml-auto w-8 h-8 text-green-500"></div>
+                      <div className="w-8 h-8 ml-auto text-green-500"></div>
                     </label>
                     <Select
                       onValueChange={setContentType}
@@ -422,6 +462,9 @@
                               )}
                               {type.value === "youtube" && (
                                 <Youtube className="w-4 h-4 mr-2 text-red-600" />
+                              )}
+                              {type.value === "pinterest" && (
+                                <FaPinterest className="w-4 h-4 mr-2 text-red-600" />
                               )}
                               {type.label}
                             </div>
@@ -448,7 +491,7 @@
                     />
                   </div>
 
-                  {contentType === "instagram" && (
+                  {contentType === "instagram" &&  (
                     <div>
                       <label className="block mb-2 text-sm font-medium text-gray-300">
                         Upload Image
@@ -475,6 +518,36 @@
                         )}
                       </div>
                     </div>
+                    
+                  )}
+                   {contentType === "pinterest" &&  (
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-gray-300">
+                        Upload Image
+                      </label>
+                      <div className="flex items-center space-x-3">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="hidden"
+                          id="image-upload"
+                        />
+                        <label
+                          htmlFor="image-upload"
+                          className="flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
+                        >
+                          <Upload className="w-5 h-5 mr-2" />
+                          <span>Upload Image</span>
+                        </label>
+                        {image && (
+                          <span className="text-sm text-gray-400">
+                            {image.name}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
                   )}
 
                   <Button

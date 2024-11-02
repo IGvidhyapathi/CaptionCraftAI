@@ -45,7 +45,7 @@ export const LinkedInMock: React.FC<LinkedInMockProps> = ({ content }) => {
         })
         copyToClipboard(content)}}
        >
-      <Link href="https://www.linkedin.com/feed/">Share on Linkedin</Link>
+      <Link href="https://www.linkedin.com/feed/"  target="blank">Share on Linkedin</Link>
       </Button>
       </div>
     </div>

@@ -49,7 +49,7 @@ export const InstagramMock: React.FC<InstagramMockProps> = ({ content }) => {
         copyToClipboard(content)}}
        >
         
-      <Link href="https://www.instagram.com">Post on Instagram</Link>
+      <Link href="https://www.instagram.com"  target="blank">Post on Instagram</Link>
       </Button>
       </div>
     </div>

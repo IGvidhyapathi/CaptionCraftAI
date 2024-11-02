@@ -35,7 +35,7 @@ export const TwitterMock: React.FC<TwitterMockProps> = ({ content }) => {
           </div>
           <div className="pt-3">
       <Button className="block px-4 py-2 ml-auto text-white bg-black rounded ">
-      <Link href="https://x.com/">Share</Link>
+      <Link href="https://x.com/"  target="blank">Share</Link>
       </Button>
       </div>
         </div>

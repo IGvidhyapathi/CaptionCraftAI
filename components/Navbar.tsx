@@ -60,7 +60,7 @@
               } sm:block mt-4 sm:mt-0`}
             >
               <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-8">
-                {["Features", "Pricing", "Docs"].map((item) => (
+                {["Resources", "Pricing", "Docs"].map((item) => (
                   <Link
                     key={item}
                     href={`/${item.toLowerCase()}`}

@@ -4,11 +4,11 @@ import Link from "next/link";
 
 export default function GettingStarted() {
   return (
-    <div className="min-h-screen text-gray-100 bg-black">
+    <div className="min-h-screen bg-gradient-to-b from-[#030307] py-16 px-4">
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
-        <h1 className="mb-12 text-5xl font-bold text-center text-white">
-          Getting Started
+        <h1 className="mb-12 text-3xl font-bold text-center text-white">
+          Getting Started with Captioncraft AI
         </h1>
         <section className="max-w-4xl mx-auto space-y-12">
           <div>

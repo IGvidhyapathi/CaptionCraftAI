@@ -57,7 +57,7 @@
             />
             <div className="flex flex-col">
             <p className="font-bold">{user?.username || user?.firstName || "Guest"}</p>
-            <p className="text-sm text-gray-500">Subscribers: 100k</p>
+            <p className="text-sm text-gray-500">100k</p>
             </div>
         </div>
 

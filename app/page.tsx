@@ -10,6 +10,8 @@ import {
   TrendingUpIcon,
   ZapIcon,
   RocketIcon,
+  SquareArrowUpRight,
+  LucideExternalLink,
 } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
@@ -56,9 +58,9 @@ export default function Home() {
             
               <Button
                 asChild
-                className="px-8 py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3355cf] rounded-full hover:bg-[#3355cf] hover:scale-105"
+                className="px-8  py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3355cf] rounded-full hover:bg-[#3355cf] hover:scale-105"
               ><HoverBorderGradient>
-                <Link href="/generate">Start Creating</Link>
+                <Link className="flex" href="/generate">Try now<LucideExternalLink className="w-5 h-5 ml-2"/></Link>
                 </HoverBorderGradient>
               </Button>
               <Button
@@ -66,7 +68,7 @@ export default function Home() {
                  className="px-8 py-3 text-lg text-[#869cea] transition duration-300 ease-in-out bg-transparent border border-[#869cea] rounded-full hover:bg-[#869cea] hover:text-black"
               >
                 <HoverBorderGradient>
-                <Link href="#features">Learn More</Link>
+                <Link href="/features">Learn More</Link>
                 </HoverBorderGradient>
               </Button>
             </div>
@@ -77,14 +79,14 @@ export default function Home() {
                   asChild
                   className="px-8 py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3355cf] rounded-full hover:bg-[#3355cf] hover:scale-105"
                 >
-                  <Link href="/generate">Start Creating</Link>
+                  <Link className="flex" href="/generate">Try now<LucideExternalLink className="w-5 h-5 ml-2"/></Link>
                 </Button>
               </SignInButton>
               <Button
                 asChild
                 className="px-8 py-3 text-lg text-[#869cea] transition duration-300 ease-in-out bg-transparent border border-[#869cea] rounded-full hover:bg-[#869cea] hover:text-black"
               >
-                <Link href="#features">Learn More</Link>
+                <Link href="/features">Learn More</Link>
               </Button>
             </div>
           )}

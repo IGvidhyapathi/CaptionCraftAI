@@ -55,6 +55,7 @@
   import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
   import { toast } from "@/components/hooks/use-toast";
 import { FaPinterest } from "react-icons/fa";
+import VoiceTyper from "@/components/voice/voicetyper";
 
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -473,24 +474,22 @@ import { FaPinterest } from "react-icons/fa";
                       </SelectContent>
                     </Select>
                   </div>
-
-                  <div>
-                    <label
-                      htmlFor="prompt"
-                      className="block mb-2 text-sm font-medium text-gray-300"
-                    >
-                      Prompt
-                    </label>
-                    <Textarea
-                      id="prompt"
-                      placeholder="Enter your prompt here..."
-                      value={prompt}
-                      onChange={(e) => setPrompt(e.target.value)}
-                      rows={4}
-                      className="w-full bg-gray-700 border-none resize-none rounded-xl"
-                    />
-                  </div>
-
+                  <div className="relative">
+  <label htmlFor="prompt" className="block mb-2 text-sm font-medium text-gray-300">
+    Prompt
+  </label>
+  <div className="relative">
+    <textarea
+      id="prompt"
+      placeholder="Enter your prompt here..."
+      value={prompt}
+      onChange={(e) => setPrompt(e.target.value)} // Update state on textarea change
+      rows={4}
+      className="w-full p-4 bg-gray-700 border border-gray-600 shadow-md resize-none rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" // Improved styling
+    />
+    <VoiceTyper setPrompt={setPrompt} /> {/* Pass setPrompt to VoiceTyper */}
+  </div>
+</div>
                   {contentType === "instagram" &&  (
                     <div>
                       <label className="block mb-2 text-sm font-medium text-gray-300">
@@ -552,7 +551,7 @@ import { FaPinterest } from "react-icons/fa";
 
                   <Button
                     onClick={handleGenerate}
-                  
+                    disabled={!prompt.trim()}
                     className="w-full py-3 text-white transition-colors bg-blue-600 hover:bg-blue-700 rounded-xl"
                   >
                     

@@ -98,7 +98,7 @@ export default function TwitterThreads() {
           <div className="flex justify-end w-full">
             <Link href="/docs/instagram-captions">
               <Button className="px-4 py-2 text-white transition duration-300 bg-blue-500 rounded shadow-md hover:bg-blue-400">
-                Previous Page
+                Next Page
               </Button>
             </Link>
           </div>

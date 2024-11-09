@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
-import { LucideExternalLink, LucideCode, LucideLayout,  LucideDatabase ,Brain} from "lucide-react";
+import { LucideExternalLink, LucideCode, LucideLayout,  LucideDatabase ,Brain, Braces} from "lucide-react";
 
 const featuresSections = [
   {
@@ -9,28 +9,28 @@ const featuresSections = [
     description:
       "Next.js enables seamless routing and server-side rendering for building dynamic web applications efficiently.",
     link: "https://nextjs.org/docs",
-    icon: <LucideCode className="w-6 h-6 text-white" />,
+    icon: <Braces className="w-6 h-6 text-blue-700" />,
   },
   {
     title: "Tailwind CSS",
     description:
       "Tailwind CSS provides utility-first styling, allowing rapid and responsive design customization for developers.",
     link: "https://tailwindcss.com/docs/installation",
-    icon: <LucideLayout className="w-6 h-6 text-white" />,
+    icon: <LucideLayout className="w-6 h-6 text-blue-300" />,
   },
   {
     title: "Gemini AI",
     description:
       "Gemini leverages AI for natural language processing, enhancing document analysis and user interactions.",
     link: "https://ai.google.dev/gemini-api/docs",
-    icon: <Brain className="w-6 h-6 text-white" />,
+    icon: <Brain className="w-6 h-6 text-pink-600" />,
   },
   {
     title: "Neon",
     description:
       "Neon offers a scalable, serverless PostgreSQL database solution with real-time data management capabilities.",
     link: "https://neon.tech/docs/introduction",
-    icon: <LucideDatabase className="w-6 h-6 text-white" />,
+    icon: <LucideDatabase className="w-6 h-6 text-green-400" />,
   },
 ];
 

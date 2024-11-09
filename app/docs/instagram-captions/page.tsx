@@ -98,7 +98,7 @@ export default function InstagramCaptions() {
           <div className="flex justify-end w-full">
             <Link href="/docs/linkedin-posts">
               <Button className="px-4 py-2 text-white transition duration-300 bg-purple-600 rounded shadow-md hover:bg-purple-500">
-                Previous Page
+                Next Page
               </Button>
             </Link>
           </div>

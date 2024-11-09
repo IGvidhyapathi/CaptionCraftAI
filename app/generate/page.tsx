@@ -27,6 +27,8 @@
       Youtube,
       Flame,
       LucideShieldAlert,
+      LucideVerified,
+      Check,
     } from "lucide-react";
     import { GoogleGenerativeAI, Part } from "@google/generative-ai";
     import ReactMarkdown from "react-markdown";
@@ -85,11 +87,13 @@ import VoiceTyper from "@/components/voice/voicetyper";
     
       const [contentType, setContentType] = useState(contentTypes[0].value);
       const [prompt, setPrompt] = useState("");
+      const [placeholderText, setPlaceholderText] = useState("Write Something to Create Wonder!");
       const [generatedContent, setGeneratedContent] = useState<string[]>([]);
       const [isLoading, setIsLoading] = useState(false);
       const [image, setImage] = useState<File | null>(null);
       const [userPoints, setUserPoints] = useState<number | null>(null);
       const [history, setHistory] = useState<HistoryItem[]>([]);
+      
       const [selectedHistoryItem, setSelectedHistoryItem] =
         useState<HistoryItem | null>(null);
 
@@ -129,6 +133,41 @@ import VoiceTyper from "@/components/voice/voicetyper";
           }
         }
       };
+      const placeholderOptions = [
+        "Write an Instagram caption for an Independence Day flag image...",
+        "Create a Twitter post about your favorite summer vacation...",
+        "Generate a YouTube description for a cooking tutorial video...",
+        "Write a LinkedIn story about your career journey...",
+        "Describe your creative idea for the next viral Instagram post...",
+        "Craft a Twitter post about a recent tech event you attended...",
+        "Write a YouTube description for a workout routine video...",
+        "Create an Instagram caption for a motivational quote with a sunset image...",
+        "Write a LinkedIn article summarizing the latest industry trends...",
+        "Generate a YouTube description for a gaming walkthrough video...",
+        "Write an Instagram caption for a new product launch with a stylish photo...",
+        "Create a Twitter post sharing your thoughts on a trending news story...",
+        "Generate a YouTube description for an educational video on data science...",
+        "Write a LinkedIn post about a recent project you completed at work...",
+        "Craft a creative Instagram caption for a food recipe post...",
+        "Create a Twitter post about a recent personal achievement...",
+        "Write a YouTube description for a vlog about your travel experiences...",
+        "Generate a LinkedIn story about a professional milestone in your career...",
+        "Write an Instagram caption for a fitness transformation journey...",
+        "Craft a Twitter post celebrating World Environment Day..."
+      ];
+      useEffect(() => {
+        // Change placeholder every 3 seconds
+        const interval = setInterval(() => {
+          setPlaceholderText((prevText) => {
+            const nextIndex = (placeholderOptions.indexOf(prevText) + 1) % placeholderOptions.length;
+            return placeholderOptions[nextIndex];
+          });
+        }, 2000); // Updated to 3000ms for 3 seconds
+    
+        return () => clearInterval(interval); // Clean up interval on unmount
+      }, []);
+    
+    
 
       const fetchContentHistory = async () => {
         if (user?.id) {
@@ -474,22 +513,22 @@ import VoiceTyper from "@/components/voice/voicetyper";
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="relative">
-  <label htmlFor="prompt" className="block mb-2 text-sm font-medium text-gray-300">
-    Prompt
-  </label>
-  <div className="relative">
-    <textarea
-      id="prompt"
-      placeholder="Enter your prompt here..."
-      value={prompt}
-      onChange={(e) => setPrompt(e.target.value)} // Update state on textarea change
-      rows={4}
-      className="w-full p-4 bg-gray-700 border border-gray-600 shadow-md resize-none rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" // Improved styling
-    />
-    <VoiceTyper setPrompt={setPrompt} /> {/* Pass setPrompt to VoiceTyper */}
-  </div>
-</div>
+                  <div>
+      <label htmlFor="prompt" className="block mb-2 text-sm font-medium text-gray-300">
+        Prompt
+      </label>
+      <div className="relative">
+        <textarea
+          id="prompt"
+          placeholder={placeholderText} // Dynamic placeholder
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          rows={4}
+          className="w-full p-4 bg-gray-700 border border-gray-600 shadow-md resize-none rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+        <VoiceTyper setPrompt={setPrompt} />
+      </div>
+    </div>
                   {contentType === "instagram" &&  (
                     <div>
                       <label className="block mb-2 text-sm font-medium text-gray-300">
@@ -511,8 +550,8 @@ import VoiceTyper from "@/components/voice/voicetyper";
                           <span>Upload Image</span>
                         </label>
                         {image && (
-                          <span className="text-sm text-gray-400">
-                            {image.name}
+                          <span className="flex text-sm text-gray-400 ">
+                            Image Uploaded <Check className="w-5 h-5 ml-2 text-green-500 "/>
                           </span>
                         )}
                       </div>

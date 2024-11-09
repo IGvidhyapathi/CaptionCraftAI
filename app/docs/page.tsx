@@ -1,44 +1,46 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
-import { Rocket, Twitter, Camera, Briefcase, Video, BookOpen } from 'lucide-react'; // Import the icons from Lucide
+import { Rocket, Twitter, Camera, Briefcase, Video, BookOpen, InstagramIcon, Youtube, BookHeart } from 'lucide-react'; // Import the icons from Lucide
+import { InstancedMesh } from "three";
+import { LinkedInLogoIcon } from "@radix-ui/react-icons";
 
 const docsSections = [
   {
     title: "Getting Started",
     description: "Learn how to set up your account and create your first AI-generated content.",
     link: "/docs/getting-started",
-    icon: <Rocket className="w-6 h-6" />,
+    icon: <Rocket className="w-6 h-6 text-blue-400" />,
   },
   {
     title: "Twitter Threads",
     description: "Discover how to create engaging Twitter threads using our AI technology.",
     link: "/docs/twitter-threads",
-    icon: <Twitter className="w-6 h-6" />,
+    icon: <Twitter className="w-6 h-6 text-blue-300" />,
   },
   {
     title: "Instagram Captions",
     description: "Learn the best practices for generating Instagram captions that boost engagement.",
     link: "/docs/instagram-captions",
-    icon: <Camera className="w-6 h-6" />,
+    icon: <InstagramIcon className="w-6 h-6 text-pink-500" />,
   },
   {
     title: "LinkedIn Posts",
     description: "Explore techniques for crafting professional LinkedIn content with AI assistance.",
     link: "/docs/linkedin-posts",
-    icon: <Briefcase className="w-6 h-6" />,
+    icon: <LinkedInLogoIcon className="w-6 h-6 text-blue-600" />,
   },
   {
     title: "Youtube Descriptions",
     description: "Create detailed descriptions for your amazing YouTube videos with AI assistance.",
     link: "/docs/youtube-descriptions",
-    icon: <Video className="w-6 h-6" />,
+    icon: <Youtube className="w-6 h-6 text-red-600" />,
   },
   {
     title: "API Reference",
     description: "Detailed documentation for integrating our AI content generation into your applications.",
     link: "/docs/api-reference",
-    icon: <BookOpen className="w-6 h-6" />,
+    icon: <BookHeart className="w-6 h-6 text-yellow-300" />,
   },
 ];
 

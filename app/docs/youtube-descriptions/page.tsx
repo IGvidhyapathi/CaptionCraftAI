@@ -98,7 +98,7 @@ export default function YouTubeDescriptions() {
           <div className="flex justify-end w-full">
             <Link href="/docs/api-reference">
               <Button className="px-4 py-2 text-white transition duration-300 bg-red-600 rounded shadow-md hover:bg-red-500">
-                Previous Page
+                Next Page
               </Button>
             </Link>
           </div>

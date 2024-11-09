@@ -98,7 +98,7 @@ export default function LinkedInCaptions() {
           <div className="flex justify-end w-full">
             <Link href="/docs/youtube-descriptions">
               <Button className="px-4 py-2 text-white transition duration-300 bg-blue-600 rounded shadow-md hover:bg-blue-500">
-                Previous Page
+                Next Page
               </Button>
             </Link>
           </div>

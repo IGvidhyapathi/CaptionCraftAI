@@ -31,7 +31,7 @@ export default function RootLayout({
         <body className={`${inter.className} bg-black text-white antialiased`}>
           <ThemeProvider attribute="class" defaultTheme="dark">
             {children}
-            <Toaster />
+            <Toaster/>
           </ThemeProvider>
         </body>
       </html>

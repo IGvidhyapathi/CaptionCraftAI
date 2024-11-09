@@ -45,12 +45,12 @@ const VoiceTyper: React.FC<VoiceTyperProps> = ({ setPrompt }) => {
   return (
     <button
       onClick={isListening ? stopListening : startListening}
-      className={`absolute right-3 top-3 text-gray-400 ${isListening ? 'text-red-500' : ''}`} // Adjust position and style
+      className={`absolute right-3 top-3 text-gray-400 ${isListening ? 'text-green-500' : ''}`} // Adjust position and style
       aria-label={isListening ? 'Stop Listening' : 'Start Listening'}
     >
       <Mic size={24} />
     </button>
-  );
+  );      
 };
 
 export default VoiceTyper;

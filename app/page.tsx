@@ -12,13 +12,17 @@ import {
   RocketIcon,
   SquareArrowUpRight,
   LucideExternalLink,
+  Star,
 } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Navbar } from "@/components/Navbar";
 import { Cover } from "@/components/ui/cover";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
-import { FollowerPointerCard } from "@/components/ui/following-pointer";
+import SparklesText from "@/components/magicui/animated-shiny-text";
+import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { RainbowButton } from "@/components/magicui/rainbow-button";
 
 interface AuthResult {
   userId: string | null; // Define the type for userId
@@ -44,7 +48,7 @@ export default function Home() {
         </div>
 
         {/* Hero Section */}
-        <div className="relative py-20 text-center lg:py-32">
+        <div className="relative py-20 mt-5 text-center lg:py-32">
           <RocketIcon className="w-16 h-16 mx-auto mb-6 text-purple-400 animate-bounce" />
           <h1 className="mb-6 text-4xl font-extrabold text-transparent sm:text-5xl lg:text-6xl bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
             <Cover>AI-Powered Social Media Content Generator</Cover>

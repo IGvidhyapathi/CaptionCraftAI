@@ -6,10 +6,10 @@ import { Navbar } from '@/components/Navbar';
 
 const SupportPage = () => {
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-200">
+    <div className="min-h-screen text-gray-200 bg-gray-900">
         <Navbar/>
       {/* Header Section */}
-      <header className="py-16 text-center px-4 sm:px-6 lg:px-8">
+      <header className="px-4 py-16 text-center sm:px-6 lg:px-8">
         <div className='mt-10'>
         <h1 className="text-2xl font-bold text-primary sm:text-5xl">Support - CaptionCraft AI</h1>
         <p className="mt-4 text-xl">How can we assist you with CaptionCraft AI?</p>
@@ -23,15 +23,15 @@ const SupportPage = () => {
           {/* Support Options Section */}
           <section aria-label="Support Options Section">
             <h2 className="text-3xl font-semibold text-primary">Get In Touch</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <div className="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2">
               
               {/* Complaint about Content */}
               <div className="p-6 bg-gray-800 rounded-lg shadow-lg hover:shadow-2xl">
-                <h3 className="text-gray-200 text-xl font-semibold text-accent">Content Complaint</h3>
+                <h3 className="text-xl font-semibold text-gray-200 text-accent">Content Complaint</h3>
                 <p className="mt-2 text-gray-300">If you find that the generated contents are not meeting your expectations, submit a complaint, and we will review it.</p>
                 <div className='mt-8'>
-                  <Link href="/file-complaint" passHref>
-                    <Button className="bg-red-500 hover:bg-red-700 text-white p-3 rounded transition duration-300">
+                  <Link href="/support/file-complaint" passHref>
+                    <Button className="p-3 text-white transition duration-300 bg-red-500 rounded hover:bg-red-700">
                       File a Complaint
                     </Button>
                   </Link>
@@ -40,7 +40,7 @@ const SupportPage = () => {
 
               {/* Direct Support */}
               <div className="p-6 bg-gray-800 rounded-lg shadow-lg hover:shadow-2xl">
-                <h3 className="text-gray-200 text-xl font-semibold text-accent">Direct Support</h3>
+                <h3 className="text-xl font-semibold text-gray-200 text-accent">Direct Support</h3>
                 <p className="mt-2 text-gray-300">For urgent support, you can connect with a representative directly. We are here to assist you live.</p>
                 <div className='mt-8'>
                   <Link href="/chat-support" passHref>
@@ -51,7 +51,7 @@ const SupportPage = () => {
 
               {/* Raise Ticket */}
               <div className="p-4 bg-gray-800 rounded-lg shadow-lg hover:shadow-2xl">
-                <h3 className="text-gray-200 text-xl font-semibold text-accent">Report the Bugs</h3>
+                <h3 className="text-xl font-semibold text-gray-200 text-accent">Report the Bugs</h3>
                 <p className="mt-2 text-gray-300">If you encounter any issues or bugs while using CaptionCraft AI, we encourage you to report them so our team can resolve them promptly.</p>
                 <div className='mt-8'>
                   <Link href="/report-bug" passHref>
@@ -62,12 +62,12 @@ const SupportPage = () => {
 
               {/* Complaint about Content */}
               <div className="p-6 bg-gray-800 rounded-lg shadow-lg hover:shadow-2xl">
-                <h3 className="text-gray-200 text-xl font-semibold text-accent">Payment Issues</h3>
+                <h3 className="text-xl font-semibold text-gray-200 text-accent">Payment Issues</h3>
                 <p className="mt-2 text-gray-300">
                 For payment issues, contact support. Refunds may take up to 1 hour. If not received, reach out again.</p>
                 <div className='mt-8'>
                   <Link href="/file-complaint" passHref>
-                    <Button className="bg-red-500 hover:bg-red-700 text-white p-3 rounded transition duration-300">
+                    <Button className="p-3 text-white transition duration-300 bg-red-500 rounded hover:bg-red-700">
                       Payment Issues
                     </Button>
                   </Link>
@@ -125,7 +125,7 @@ const SupportPage = () => {
       </main>
 
       {/* Footer Section */}
-      <footer className="bg-black text-center py-6">
+      <footer className="py-6 text-center bg-black">
         <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} CaptionCraft AI. All Rights Reserved.</p>
       </footer>
     </div>

@@ -58,6 +58,7 @@
   import { toast } from "@/components/hooks/use-toast";
 import { FaPinterest } from "react-icons/fa";
 import VoiceTyper from "@/components/voice/voicetyper";
+import { RainbowButton } from "@/components/magicui/rainbow-button";
 
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -465,11 +466,13 @@ import VoiceTyper from "@/components/voice/voicetyper";
                     </div>
                   </div>
                   
-                  <HoverBorderGradient className="px-4 py-2 text-sm text-white transition-colors bg-blue-600 rounded-full hover:bg-blue-700">
+                  <RainbowButton className="px-4 py-2 text-sm">
                     
-                    <Link href="/pricing">Get More Points</Link>
+                    <Link href="/pricing">
+                    Get More Points
+                    </Link>
                 
-                  </HoverBorderGradient>
+                  </RainbowButton>
                   
                 </div>
 

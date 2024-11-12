@@ -1,3 +1,4 @@
+import { BorderBeam } from "@/components/magicui/border-beam";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -7,6 +8,7 @@ export default function GettingStarted() {
     <div className="min-h-screen bg-gradient-to-b from-[#030307] py-16 px-4">
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
+        
         <h1 className="mb-12 text-3xl font-bold text-center text-white">
           Getting Started with Captioncraft AI
         </h1>

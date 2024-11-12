@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { CheckIcon, X } from "lucide-react";
+import { CheckIcon, Star, X, Zap } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
@@ -9,6 +9,10 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
 import { toast } from "@/components/hooks/use-toast";
+import Link from "next/link";
+import { BorderBeam } from "@/components/magicui/border-beam";
+
+
 
 const pricingPlans = [
   {
@@ -98,6 +102,7 @@ export default function PricingPage() {
   return (
     
     <div className="min-h-screen text-gray-100 bg-black">
+      
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
         <h1 className="mb-12 text-5xl font-bold text-center text-white">
@@ -115,7 +120,9 @@ export default function PricingPage() {
                 onMouseLeave={() => setHovered(false)}
               >
                 {/* Text and Features */}
+                <BorderBeam/>
                 <div className="relative z-20">
+                  
                   <h2 className="mb-4 text-2xl font-bold text-white">
                     {plan.name}
                   </h2>
@@ -177,6 +184,14 @@ export default function PricingPage() {
             );
           })}
         </div>
+        <div className="flex justify-end">
+  <Link href="/support">
+    <div className="px-6 py-2 text-base font-bold text-white transition duration-300 rounded-md hover:underline ">
+      Need Help? Contact Support
+    </div>
+  </Link>
+</div>
+ 
       </main>
       </div>
   );

@@ -9,12 +9,10 @@ import {
   useAuth,
 } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
-import { Captions, Menu, Star, X, Zap } from "lucide-react";
+import {  Menu, X } from "lucide-react";
 import { throttle } from "lodash";
 import AnimatedShinyText from "@/components/ui/animated-shiny-text";
-import { RainbowButton } from "./magicui/rainbow-button";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { NumberTicker } from "./magicui/number-ticker";
+
 
 export function Navbar() {
   const { userId } = useAuth();
@@ -116,16 +114,7 @@ export function Navbar() {
               </SignedIn>
             </div>
           </div>
-          {/* GitHub Button */}
-          <div className="absolute hidden sm:block top-4 right-4 sm:top-6 sm:right-8"> 
-            <Link href="https://github.com/IGvidhyapathi/CaptionCraftAI">
-            <RainbowButton className="flex items-center text-sm gap-x-1">
-             
-              <Zap/> Content Generated  <Star fill="yellow "/><NumberTicker value={100} />
-              
-            </RainbowButton>
-            </Link>
-          </div>
+         
         </div>
       </nav>
     </header>

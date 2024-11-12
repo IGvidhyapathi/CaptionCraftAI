@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
-import { Rocket, Twitter, Camera, Briefcase, Video, BookOpen, InstagramIcon, Youtube, BookHeart } from 'lucide-react'; // Import the icons from Lucide
-import { InstancedMesh } from "three";
+import { Rocket, Twitter, InstagramIcon, Youtube, BookHeart } from 'lucide-react'; // Import the icons from Lucide
 import { LinkedInLogoIcon } from "@radix-ui/react-icons";
+
 
 const docsSections = [
   {

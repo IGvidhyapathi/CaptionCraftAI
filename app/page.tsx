@@ -4,25 +4,19 @@ import {
   TwitterIcon,
   InstagramIcon,
   LinkedinIcon,
-  ArrowRightIcon,
   CheckCircleIcon,
   SparklesIcon,
   TrendingUpIcon,
   ZapIcon,
   RocketIcon,
-  SquareArrowUpRight,
   LucideExternalLink,
-  Star,
 } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Navbar } from "@/components/Navbar";
 import { Cover } from "@/components/ui/cover";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
-import SparklesText from "@/components/magicui/animated-shiny-text";
-import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { RainbowButton } from "@/components/magicui/rainbow-button";
+
 
 interface AuthResult {
   userId: string | null; // Define the type for userId
@@ -36,6 +30,7 @@ export default function Home() {
       <Navbar />
 
       <main className="container relative px-4 mx-auto sm:px-6 lg:px-8">
+        
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 animate-float">
           <SparklesIcon className="w-8 h-8 text-yellow-300 opacity-50" />
@@ -51,11 +46,10 @@ export default function Home() {
         <div className="relative py-20 mt-5 text-center lg:py-32">
           <RocketIcon className="w-16 h-16 mx-auto mb-6 text-purple-400 animate-bounce" />
           <h1 className="mb-6 text-4xl font-extrabold text-transparent sm:text-5xl lg:text-6xl bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-            <Cover>AI-Powered Social Media Content Generator</Cover>
+            <Cover>Effortless, Engaging Captions Powered by AI.</Cover>
           </h1>
           <p className="max-w-2xl mx-auto mb-10 text-xl text-gray-300">
-            Create engaging content for Twitter, Instagram, and LinkedIn with
-            cutting-edge AI technology.
+          Create engaging, high-quality content with the power of AI. CaptionCraft AI helps you craft personalized and impactful captions
           </p>
           {userId ? (
             <div className="flex justify-center space-x-4">
@@ -192,7 +186,7 @@ export default function Home() {
             asChild
             className="px-8 py-4 text-lg text-white transition duration-300 ease-in-out transform bg-[#3355cf] rounded-full hover:bg-[#292886] hover:scale-105"
           >
-            <Link href="#features">Get Started Now!</Link>
+            <Link href="/generate">Get Started Now!</Link>
           </Button>
         </div>
       </main>

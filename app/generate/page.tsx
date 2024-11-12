@@ -59,6 +59,8 @@
 import { FaPinterest } from "react-icons/fa";
 import VoiceTyper from "@/components/voice/voicetyper";
 import { RainbowButton } from "@/components/magicui/rainbow-button";
+import { BorderBeam } from "@/components/magicui/border-beam";
+import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
 
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -389,7 +391,6 @@ import { RainbowButton } from "@/components/magicui/rainbow-button";
       return (
       
         <div className="min-h-screen text-white bg-gradient-to-br from-gray-900 to-black">
-           
           <Navbar />
           <div className="container px-4 py-8 mx-auto mb-8 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-8 mt-14 lg:grid-cols-3">

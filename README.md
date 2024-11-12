@@ -1,10 +1,8 @@
-<p align="center">
-  <img src="public/thumbnail.jpg" alt="ThreadCraft AI Logo" />
-</p>
 
-# ThreadCraft AI: Social Media Content Generator
 
-ThreadCraft AI is a powerful Next.js application that leverages AI to generate engaging content for various social media platforms. This project uses cutting-edge technologies to provide users with an intuitive interface for creating Twitter threads, Instagram captions, and LinkedIn posts.
+# Captioncraft AI: Social Media Content Generator
+
+CaptionCraft AI is a powerful Next.js application that leverages AI to generate engaging content for various social media platforms. This project uses cutting-edge technologies to provide users with an intuitive interface for creating Twitter threads, Instagram captions, and LinkedIn posts.
 
 ## Features
 

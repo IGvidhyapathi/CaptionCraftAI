@@ -360,7 +360,7 @@ import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
 
       if (!isSignedIn) {
         return (
-          <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a]">
+          <div className="flex items-center justify-center min-h-screen bg-slate-950">
             <div className="text-center bg-[#111111] p-8 rounded-lg shadow-lg">
               <h1 className="mb-4 text-3xl font-bold text-white">
                 Welcome to captionCraft AI
@@ -518,10 +518,12 @@ import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
                     </Select>
                   </div>
                   <div>
+                    
       <label htmlFor="prompt" className="block mb-2 text-sm font-medium text-gray-300">
         Prompt
       </label>
       <div className="relative">
+       
         <textarea
           id="prompt"
           placeholder={placeholderText} // Dynamic placeholder

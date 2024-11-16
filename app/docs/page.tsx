@@ -46,7 +46,7 @@ const docsSections = [
 
 export default function DocsPage() {
   return (
-    <div className="min-h-screen text-gray-100 bg-black">
+    <div className="min-h-screen text-gray-100 bg-slate-950">
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
         <h1 className="mb-12 text-4xl font-bold text-center text-white">Documentation</h1>

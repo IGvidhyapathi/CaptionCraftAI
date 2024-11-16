@@ -5,7 +5,7 @@ import { FaHeart, FaHashtag, FaPen, FaClock } from "react-icons/fa"; // Updated 
 
 export default function InstagramCaptions() {
   return (
-    <div className="min-h-screen text-gray-100 bg-gradient-to-b from-black to-gray-900">
+    <div className="min-h-screen text-gray-100 bg-slate-950">
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
         <h1 className="mb-12 text-3xl font-bold text-center text-white">

@@ -101,7 +101,7 @@ export default function PricingPage() {
 
   return (
     
-    <div className="min-h-screen text-gray-100 bg-black">
+    <div className="min-h-screen text-gray-100 bg-slate-950">
       
       <Navbar />
       <main className="container px-8 py-20 mx-auto">

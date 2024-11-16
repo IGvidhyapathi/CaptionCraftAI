@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function GettingStarted() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#030307] py-16 px-4">
+    <div className="min-h-screen px-4 py-16 bg-slate-950">
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
         

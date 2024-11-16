@@ -16,6 +16,9 @@ import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Navbar } from "@/components/Navbar";
 import { Cover } from "@/components/ui/cover";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
+import AnimatedShinyText from "@/components/ui/animated-shiny-text";
+import { RainbowButton } from "@/components/magicui/rainbow-button";
 
 
 interface AuthResult {
@@ -26,7 +29,7 @@ export default function Home() {
   const { userId }: AuthResult = auth(); // Explicitly type userId
 
   return (
-    <div className="min-h-screen pt-20 overflow-hidden text-gray-200 bg-gradient-to-b from-gray-900 to-black">
+    <div className="min-h-screen pt-20 overflow-hidden text-gray-200 bg-slate-950">
       <Navbar />
 
       <main className="container relative px-4 mx-auto sm:px-6 lg:px-8">
@@ -53,38 +56,45 @@ export default function Home() {
           </p>
           {userId ? (
             <div className="flex justify-center space-x-4">
-            
+            <RainbowButton>
               <Button
                 asChild
-                className="px-8  py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3355cf] rounded-full hover:bg-[#3355cf] hover:scale-105"
-              ><HoverBorderGradient>
-                <Link className="flex" href="/generate">Try now<LucideExternalLink className="w-5 h-5 ml-2"/></Link>
-                </HoverBorderGradient>
-              </Button>
-              <Button
-                asChild
-                 className="px-8 py-3 text-lg text-[#869cea] transition duration-300 ease-in-out bg-transparent border border-[#869cea] rounded-full hover:bg-[#869cea] hover:text-black"
+                className="px-2 py-3 text-lg text-black transition duration-300 ease-in-out transform"
               >
-                <HoverBorderGradient>
-                <Link href="/features">Learn More</Link>
-                </HoverBorderGradient>
+                <Link className="flex" href="/generate">Try now<LucideExternalLink className="w-5 h-5 ml-2"/></Link>
+                
               </Button>
+              </RainbowButton>
+              <RainbowButton>
+              <Button
+                asChild
+                 className="px-1 py-3 text-lg text-[#000] transition duration-300 ease-in-out  "
+              >
+                
+                <Link href="/features">Learn More</Link>
+                
+              </Button>
+              </RainbowButton>
             </div>
           ) : (
             <div className="flex justify-center space-x-4">
+              <AnimatedShinyText>
               <SignInButton mode="modal">
                 <Button
                   asChild
-                  className="px-8 py-3 text-lg text-white transition duration-300 ease-in-out transform bg-[#3355cf] rounded-full hover:bg-[#3355cf] hover:scale-105"
+                  className="px-5 py-3 text-lg text-black transition duration-300 ease-in-out transform"
                 >
                   <Link className="flex" href="/generate">Try now<LucideExternalLink className="w-5 h-5 ml-2"/></Link>
+                  
                 </Button>
               </SignInButton>
+              </AnimatedShinyText>
               <Button
                 asChild
                 className="px-8 py-3 text-lg text-[#869cea] transition duration-300 ease-in-out bg-transparent border border-[#869cea] rounded-full hover:bg-[#869cea] hover:text-black"
-              >
+              ><AnimatedGradientText>
                 <Link href="/features">Learn More</Link>
+                </AnimatedGradientText>
               </Button>
             </div>
           )}

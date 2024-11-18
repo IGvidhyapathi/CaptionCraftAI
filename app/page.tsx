@@ -12,28 +12,22 @@ import {
   LucideExternalLink,
 } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Navbar } from "@/components/Navbar";
 import { Cover } from "@/components/ui/cover";
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
-import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
-import AnimatedShinyText from "@/components/ui/animated-shiny-text";
 import { RainbowButton } from "@/components/magicui/rainbow-button";
 
-
 interface AuthResult {
-  userId: string | null; // Define the type for userId
+  userId: string | null;
 }
 
 export default function Home() {
-  const { userId }: AuthResult = auth(); // Explicitly type userId
+  const { userId }: AuthResult = auth();
 
   return (
     <div className="min-h-screen pt-20 overflow-hidden text-gray-200 bg-slate-950">
       <Navbar />
 
       <main className="container relative px-4 mx-auto sm:px-6 lg:px-8">
-        
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 animate-float">
           <SparklesIcon className="w-8 h-8 text-yellow-300 opacity-50" />
@@ -51,51 +45,48 @@ export default function Home() {
           <h1 className="mb-6 text-4xl font-extrabold text-transparent sm:text-5xl lg:text-6xl bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
             <Cover>Effortless, Engaging Captions Powered by AI.</Cover>
           </h1>
-          <p className="max-w-2xl mx-auto mb-10 text-xl text-gray-300">
-          Create engaging, high-quality content with the power of AI. CaptionCraft AI helps you craft personalized and impactful captions
+          <p className="max-w-2xl mx-auto mb-10 text-lg text-gray-300 sm:text-xl">
+            Create engaging, high-quality content with the power of AI. CaptionCraft AI helps you craft personalized and impactful captions.
           </p>
           {userId ? (
-            <div className="flex justify-center space-x-4">
-            <RainbowButton>
-              <Button
-                asChild
-                className="px-2 py-3 text-lg text-black transition duration-300 ease-in-out transform"
-              >
-                <Link className="flex" href="/generate">Try now<LucideExternalLink className="w-5 h-5 ml-2"/></Link>
-                
-              </Button>
+            <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+              <RainbowButton>
+                <Link
+                  href="/generate"
+                  className="flex items-center px-4 py-3 text-base text-black transition duration-300 ease-in-out transform sm:px-6 sm:py-3 sm:text-lg"
+                >
+                  Try now
+                  <LucideExternalLink className="w-5 h-5 ml-2" />
+                </Link>
               </RainbowButton>
               <RainbowButton>
-              <Button
-                asChild
-                 className="px-1 py-3 text-lg text-[#000] transition duration-300 ease-in-out  "
-              >
-                
-                <Link href="/features">Learn More</Link>
-                
-              </Button>
+                <Link
+                  href="/features"
+                  className="px-4 py-3 text-base text-black transition duration-300 ease-in-out transform sm:px-7 sm:text-lg"
+                >
+                  Learn More
+                </Link>
               </RainbowButton>
             </div>
           ) : (
-            <div className="flex justify-center space-x-4">
-              <AnimatedShinyText>
-              <SignInButton mode="modal">
-                <Button
-                  asChild
-                  className="px-5 py-3 text-lg text-black transition duration-300 ease-in-out transform"
+            <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+              <RainbowButton>
+                <Link
+                  href="/generate"
+                  className="flex items-center px-4 py-3 text-base text-black transition duration-300 ease-in-out transform sm:px-6 sm:py-3 sm:text-lg"
                 >
-                  <Link className="flex" href="/generate">Try now<LucideExternalLink className="w-5 h-5 ml-2"/></Link>
-                  
-                </Button>
-              </SignInButton>
-              </AnimatedShinyText>
-              <Button
-                asChild
-                className="px-8 py-3 text-lg text-[#869cea] transition duration-300 ease-in-out bg-transparent border border-[#869cea] rounded-full hover:bg-[#869cea] hover:text-black"
-              ><AnimatedGradientText>
-                <Link href="/features">Learn More</Link>
-                </AnimatedGradientText>
-              </Button>
+                  Try now
+                  <LucideExternalLink className="w-5 h-5 ml-2" />
+                </Link>
+              </RainbowButton>
+              <RainbowButton>
+                <Link
+                  href="/features"
+                  className="px-4 py-3 text-base text-black transition duration-300 ease-in-out transform sm:px-7 sm:text-lg"
+                >
+                  Learn More
+                </Link>
+              </RainbowButton>
             </div>
           )}
         </div>
@@ -106,7 +97,26 @@ export default function Home() {
             Supercharge Your Social Media Presence
           </h2>
           <div className="grid max-w-5xl grid-cols-1 gap-10 mx-auto md:grid-cols-3">
-            {[{title: "Twitter Threads", icon: <TwitterIcon className="w-10 h-10 mb-4 text-blue-400" />, description: "Generate compelling Twitter threads that engage your audience and boost your reach."}, {title: "Instagram Captions", icon: <InstagramIcon className="w-10 h-10 mb-4 text-pink-400" />, description: "Create catchy captions for your Instagram posts that increase engagement and followers."}, {title: "LinkedIn Posts", icon: <LinkedinIcon className="w-10 h-10 mb-4 text-blue-600" />, description: "Craft professional content for your LinkedIn network to establish thought leadership."}].map((feature, index) => (
+            {[
+              {
+                title: "Twitter Threads",
+                icon: <TwitterIcon className="w-10 h-10 mb-4 text-blue-400" />,
+                description:
+                  "Generate compelling Twitter threads that engage your audience and boost your reach.",
+              },
+              {
+                title: "Instagram Captions",
+                icon: <InstagramIcon className="w-10 h-10 mb-4 text-pink-400" />,
+                description:
+                  "Create catchy captions for your Instagram posts that increase engagement and followers.",
+              },
+              {
+                title: "LinkedIn Posts",
+                icon: <LinkedinIcon className="w-10 h-10 mb-4 text-blue-600" />,
+                description:
+                  "Craft professional content for your LinkedIn network to establish thought leadership.",
+              },
+            ].map((feature, index) => (
               <div
                 key={index}
                 className="p-8 transition duration-300 ease-in-out transform shadow-lg rounded-2xl bg-gradient-to-br from-gray-800 to-gray-700 hover:shadow-xl hover:-translate-y-1"
@@ -125,36 +135,19 @@ export default function Home() {
 
         {/* Benefits Section */}
         <div className="relative py-20 my-20 bg-gray-800 rounded-3xl">
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-3xl">
-            <svg
-              className="absolute w-full h-full"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-            >
-              <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="url(#grid-pattern)" />
-            </svg>
-            <defs>
-              <pattern
-                id="grid-pattern"
-                width="10"
-                height="10"
-                patternUnits="userSpaceOnUse"
-              >
-                <path
-                  d="M 10 0 L 0 0 0 10"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.05)"
-                  strokeWidth="0.5"
-                />
-              </pattern>
-            </defs>
-          </div>
           <div className="relative z-10">
             <h2 className="mb-12 text-3xl font-bold text-center text-white">
               Why Choose Our AI Content Generator?
             </h2>
             <div className="grid max-w-4xl grid-cols-1 gap-8 mx-auto md:grid-cols-2">
-              {["Save time and effort on content creation", "Consistently produce high-quality posts", "Increase engagement across all platforms", "Stay ahead of social media trends", "Customize content to match your brand voice", "Scale your social media presence effortlessly"].map((benefit, index) => (
+              {[
+                "Save time and effort on content creation",
+                "Consistently produce high-quality posts",
+                "Increase engagement across all platforms",
+                "Stay ahead of social media trends",
+                "Customize content to match your brand voice",
+                "Scale your social media presence effortlessly",
+              ].map((benefit, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <CheckCircleIcon className="flex-shrink-0 w-6 h-6 text-green-400" />
                   <span className="text-gray-300">{benefit}</span>
@@ -166,29 +159,6 @@ export default function Home() {
 
         {/* CTA Section */}
         <div className="relative py-20 text-center">
-          <div className="absolute top-10 right-10 animate-spin-slow">
-            <svg
-              className="w-20 h-20 text-blue-300 opacity-20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M12 6V12L16 14"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
           <h2 className="mb-8 text-4xl font-bold text-white">
             Ready to revolutionize your social media strategy?
           </h2>

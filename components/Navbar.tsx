@@ -30,7 +30,7 @@ export function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-gray-900/80 backdrop-blur-md" : "bg-transparent"
+        isScrolled ? "bg-gray-900/80 backdrop-blur-md" : "bg-inherit"
       }`}
     >
       <nav className="container px-4 py-4 mx-auto sm:px-8 sm:py-6">

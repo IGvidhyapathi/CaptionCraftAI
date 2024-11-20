@@ -10,11 +10,14 @@ import {
   ZapIcon,
   RocketIcon,
   LucideExternalLink,
+  Rainbow,
 } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
 import { Navbar } from "@/components/Navbar";
 import { Cover } from "@/components/ui/cover";
 import { RainbowButton } from "@/components/magicui/rainbow-button";
+import { ParticlesDemo } from "@/components/magicui/particlesdemo";
+
 
 interface AuthResult {
   userId: string | null;
@@ -24,9 +27,10 @@ export default function Home() {
   const { userId }: AuthResult = auth();
 
   return (
+   
     <div className="min-h-screen pt-20 overflow-hidden text-gray-200 bg-slate-950">
+      
       <Navbar />
-
       <main className="container relative px-4 mx-auto sm:px-6 lg:px-8">
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 animate-float">
@@ -116,6 +120,7 @@ export default function Home() {
                 description:
                   "Craft professional content for your LinkedIn network to establish thought leadership.",
               },
+             
             ].map((feature, index) => (
               <div
                 key={index}
@@ -134,40 +139,45 @@ export default function Home() {
         </div>
 
         {/* Benefits Section */}
-        <div className="relative py-20 my-20 bg-gray-800 rounded-3xl">
-          <div className="relative z-10">
-            <h2 className="mb-12 text-3xl font-bold text-center text-white">
-              Why Choose Our AI Content Generator?
-            </h2>
-            <div className="grid max-w-4xl grid-cols-1 gap-8 mx-auto md:grid-cols-2">
-              {[
-                "Save time and effort on content creation",
-                "Consistently produce high-quality posts",
-                "Increase engagement across all platforms",
-                "Stay ahead of social media trends",
-                "Customize content to match your brand voice",
-                "Scale your social media presence effortlessly",
-              ].map((benefit, index) => (
-                <div key={index} className="flex items-center space-x-3">
-                  <CheckCircleIcon className="flex-shrink-0 w-6 h-6 text-green-400" />
-                  <span className="text-gray-300">{benefit}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="relative py-10 my-10 bg-gray-800 sm:py-16 md:py-20 sm:my-16 md:my-20 rounded-3xl">
+  <div className="relative z-10 px-4 sm:px-6 md:px-8">
+    <h2 className="mb-8 text-2xl font-bold leading-tight text-center text-white sm:mb-10 md:mb-12 sm:text-3xl md:text-4xl">
+      Why Choose Our AI Content Generator?
+    </h2>
+    <div className="grid max-w-xl grid-cols-1 gap-6 mx-auto sm:gap-8 sm:max-w-3xl md:max-w-4xl md:grid-cols-2">
+      {[
+        "Save time and effort on content creation",
+        "Consistently produce high-quality posts",
+        "Increase engagement across all platforms",
+        "Stay ahead of social media trends",
+        "Customize content to match your brand voice",
+        "Scale your social media presence effortlessly",
+      ].map((benefit, index) => (
+        <div key={index} className="flex items-start space-x-3">
+          <CheckCircleIcon className="flex-shrink-0 w-5 h-5 text-green-400 sm:w-6 sm:h-6" />
+          <span className="text-sm leading-relaxed text-gray-300 sm:text-base md:text-lg">
+            {benefit}
+          </span>
         </div>
+      ))}
+    </div>
+  </div>
+</div>
+
 
         {/* CTA Section */}
         <div className="relative py-20 text-center">
           <h2 className="mb-8 text-4xl font-bold text-white">
             Ready to revolutionize your social media strategy?
           </h2>
-          <Button
-            asChild
-            className="px-8 py-4 text-lg text-white transition duration-300 ease-in-out transform bg-[#3355cf] rounded-full hover:bg-[#292886] hover:scale-105"
+          
+          <RainbowButton
+            
+            className="px-5 py-4 text-lg transition duration-300 ease-in-out transform"
           >
             <Link href="/generate">Get Started Now!</Link>
-          </Button>
+          </RainbowButton>
+          
         </div>
       </main>
     </div>

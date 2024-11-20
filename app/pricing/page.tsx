@@ -120,7 +120,7 @@ export default function PricingPage() {
                 onMouseLeave={() => setHovered(false)}
               >
                 {/* Text and Features */}
-                <BorderBeam/>
+                
                 <div className="relative z-20">
                   
                   <h2 className="mb-4 text-2xl font-bold text-white">

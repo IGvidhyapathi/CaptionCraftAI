@@ -90,7 +90,7 @@ import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
     
       const [contentType, setContentType] = useState(contentTypes[0].value);
       const [prompt, setPrompt] = useState("");
-      const [placeholderText, setPlaceholderText] = useState("Write Something to Create Wonder!");
+      const [placeholderText, setPlaceholderText] = useState("Write Something to Create Wonders!");
       const [generatedContent, setGeneratedContent] = useState<string[]>([]);
       const [isLoading, setIsLoading] = useState(false);
       const [image, setImage] = useState<File | null>(null);

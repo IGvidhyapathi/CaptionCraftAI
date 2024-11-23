@@ -54,13 +54,23 @@
       TooltipProvider,
       TooltipTrigger,
     } from "@/components/ui/tooltip"
-  import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
   import { toast } from "@/components/hooks/use-toast";
 import { FaPinterest } from "react-icons/fa";
 import VoiceTyper from "@/components/voice/voicetyper";
 import { RainbowButton } from "@/components/magicui/rainbow-button";
-import { BorderBeam } from "@/components/magicui/border-beam";
-import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
+
 
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -96,6 +106,7 @@ import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
       const [image, setImage] = useState<File | null>(null);
       const [userPoints, setUserPoints] = useState<number | null>(null);
       const [history, setHistory] = useState<HistoryItem[]>([]);
+      const [isDialogOpen, setIsDialogOpen] = useState(false);
       
       const [selectedHistoryItem, setSelectedHistoryItem] =
         useState<HistoryItem | null>(null);
@@ -179,14 +190,16 @@ import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
         }
       };
       const handleClear = () => {
+        
         setSelectedHistoryItem(null);
         setGeneratedContent([]);
-        setPrompt("") // Clear the typed prompt
+        setPrompt(""); 
         console.log("Cleared selected history content and typed prompt");
         toast({
-          variant:"default",
-          title: "Prompt Cleared"
-        })
+          variant: "default",
+          title: "Prompt Cleared",
+        });
+        setIsDialogOpen(false);
       };
 
       const handleGenerate = async () => {
@@ -610,13 +623,41 @@ import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
                       `Generate Content (${POINTS_PER_GENERATION} points)`
                     )}
                   </Button>
-                  <Button
-                  onClick={handleClear}
-                  variant={"default"}
-                   className="block px-4 py-2 ml-auto text-white bg-red-600 hover:bg-red-700"
-                   >
-                   Clear Prompt
-                    </Button>
+                  <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogTrigger asChild>
+          <button
+            className="block px-4 py-2 ml-auto text-white bg-red-600 rounded-md hover:bg-red-700"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            Clear Prompt
+          </button>
+        </AlertDialogTrigger>
+
+        {/* Dialog Content */}
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. It will clear your prompt and remove
+              any generated content.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
+              onClick={() => setIsDialogOpen(false)}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700"
+              onClick={handleClear}
+            >
+              Clear
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
                 </div>
 
                 {/* Generated content display */}

@@ -16,7 +16,6 @@ import { auth } from "@clerk/nextjs/server";
 import { Navbar } from "@/components/Navbar";
 import { Cover } from "@/components/ui/cover";
 import { RainbowButton } from "@/components/magicui/rainbow-button";
-import { ParticlesDemo } from "@/components/magicui/particlesdemo";
 
 
 interface AuthResult {

@@ -176,6 +176,7 @@ export default function Home() {
           >
             <Link href="/generate">Get Started Now!</Link>
           </RainbowButton>
+          <p className="pt-1">No Credit Card Required</p>
           
         </div>
       </main>

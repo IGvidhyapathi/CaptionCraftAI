@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
+import { Light } from "three";
 
 
 const inter = Inter({ subsets: ["latin"] });

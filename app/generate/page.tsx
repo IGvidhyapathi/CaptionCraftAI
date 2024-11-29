@@ -69,6 +69,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
 
 
 
@@ -480,6 +481,7 @@ import {
                     </div>
                   </div>
                   
+                  
                   <RainbowButton className="px-4 py-2 text-sm">
                     
                     <Link href="/pricing">
@@ -644,7 +646,7 @@ import {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel
-              className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
+              className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-black"
               onClick={() => setIsDialogOpen(false)}
             >
               Cancel

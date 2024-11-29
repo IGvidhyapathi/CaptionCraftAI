@@ -13,7 +13,17 @@ const config: Config = {
   theme: {
   	extend: {
   		keyframes: {
-			
+			bgShift: {
+				'0%': {
+				  backgroundPosition: '0% 0%',
+				},
+				'50%': {
+				  backgroundPosition: '100% 0%',
+				},
+				'100%': {
+				  backgroundPosition: '0% 0%',
+				},
+			  },
 			"border-beam": {
 				"100%": {
 				  "offset-distance": "100%",
@@ -58,7 +68,7 @@ const config: Config = {
   			}
   		},
   		animation: {
-			
+			bgShift: 'bgShift 5s ease-in-out infinite',
 			"border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',

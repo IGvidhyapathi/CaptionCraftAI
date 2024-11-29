@@ -1,23 +1,19 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { CheckIcon, Star, X, Zap } from "lucide-react";
+import { CheckIcon, X } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
 import { toast } from "@/components/hooks/use-toast";
 import Link from "next/link";
-import { BorderBeam } from "@/components/magicui/border-beam";
-
-
+import 'animate.css';
 
 const pricingPlans = [
   {
     name: "Basic",
-    price: "99",
+    price: 99,
     priceId: "price_1Q9Nn8KwC82kR8GZfE62TaFO",
     features: [
       { name: "20 AI-generated posts per month", available: true },
@@ -29,7 +25,7 @@ const pricingPlans = [
   },
   {
     name: "Pro",
-    price: "399",
+    price: 399,
     priceId: "price_1Q9OBZKwC82kR8GZvI6ofAcS",
     features: [
       { name: "60 AI-generated posts per month", available: true },
@@ -42,7 +38,7 @@ const pricingPlans = [
   },
   {
     name: "Enterprise",
-    price: "3999",
+    price: 3999,
     priceId: "price_1Q9liVKwC82kR8GZl6tkDoOM",
     features: [
       { name: "Unlimited AI-generated posts", available: true },
@@ -55,6 +51,41 @@ const pricingPlans = [
   },
 ];
 
+const NovemberDiscount = ({ handleSubscribe }: { handleSubscribe: (priceId: string | null) => void }) => {
+  const proDiscountPrice = 199; // ₹199/month for Pro
+  const enterpriseDiscountPrice = 1999; // ₹1999/year for Enterprise
+
+  return (
+    <div className="relative flex flex-col items-center justify-center p-6 mb-8 overflow-hidden text-center rounded-lg shadow-lg bg-gradient-to-r from-indigo-600 to-purple-600 bg-[length:200%_100%] animate-bgShift">
+      <h2 className="mb-4 text-3xl font-bold text-white">
+        November Special Discount! 🎉
+      </h2>
+      <p className="mb-6 text-lg text-gray-200">
+        Get up to <span className="font-bold text-white">50% OFF</span> on our Pro and Enterprise plans for this month
+        only. 🎁
+      </p>
+      <div className="flex flex-col gap-4">
+        <Button
+          className="px-6 py-3 text-black transition-transform transform bg-white hover:bg-gray-200 hover:scale-105"
+          onClick={() => handleSubscribe("price_1QQVtEKwC82kR8GZSC6DJYM6")}
+        >
+          Pro Plan: ₹{proDiscountPrice}/month 
+        </Button>
+        <Button
+          className="px-6 py-3 text-black transition-transform transform bg-white hover:bg-gray-200 hover:scale-105"
+          onClick={() => handleSubscribe("price_1QQVvaKwC82kR8GZ1XMjrOiw")}
+        >
+          Enterprise Plan: ₹{enterpriseDiscountPrice}/year 
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+
+
+
+
 export default function PricingPage() {
   const { isSignedIn, user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -62,10 +93,10 @@ export default function PricingPage() {
   const handleSubscribe = async (priceId: string | null) => {
     if (!isSignedIn) {
       toast({
-        variant:"destructive",
+        variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: " Please Log in to Subscribe",
-      })
+        description: "Please Log in to Subscribe",
+      });
       return;
     }
 
@@ -81,6 +112,7 @@ export default function PricingPage() {
           userId: user?.id,
         }),
       });
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to create checkout session");
@@ -88,9 +120,8 @@ export default function PricingPage() {
 
       const { sessionId } = await response.json();
       const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-      if (!stripe) {
-        throw new Error("Failed to load Stripe");
-      }
+      if (!stripe) throw new Error("Failed to load Stripe");
+
       await stripe.redirectToCheckout({ sessionId });
     } catch (error) {
       console.error("Error creating checkout session:", error);
@@ -100,102 +131,57 @@ export default function PricingPage() {
   };
 
   return (
-    
     <div className="min-h-screen text-gray-100 bg-slate-950">
-      
       <Navbar />
       <main className="container px-8 py-20 mx-auto">
-        <h1 className="mb-12 text-5xl font-bold text-center text-white">
-          Pricing Plans
-        </h1>
+        <h1 className="mb-12 text-5xl font-bold text-center text-white">Pricing Plans</h1>
+        <NovemberDiscount handleSubscribe={handleSubscribe} />
         <div className="grid max-w-6xl grid-cols-1 gap-8 mx-auto md:grid-cols-3">
-          {pricingPlans.map((plan, index) => {
-            const [hovered, setHovered] = useState(false);
-
-            return (
-              <div
-                key={index}
-                className="relative flex flex-col p-8 overflow-hidden border border-gray-800 rounded-lg group"
-                onMouseEnter={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
+          {pricingPlans.map((plan, index) => (
+            <div
+              key={index}
+              className="relative flex flex-col p-8 overflow-hidden border border-gray-800 rounded-lg"
+            >
+              <h2 className="mb-4 text-2xl font-bold text-white">{plan.name}</h2>
+              <p className="mb-6 text-4xl font-bold text-white">
+                ₹{plan.price}
+                <span className="text-lg font-normal text-gray-400">
+                  {plan.name === "Enterprise" ? "/year" : "/month"}
+                </span>
+              </p>
+              <ul className="flex-grow mb-8">
+                {plan.features.map((feature, featureIndex) => (
+                  <li
+                    key={featureIndex}
+                    className="flex items-center mb-3 text-gray-300"
+                  >
+                    {!feature.available ? (
+                      <X className="w-5 h-5 mr-2 text-red-500" />
+                    ) : (
+                      <CheckIcon className="w-5 h-5 mr-2 text-green-500" />
+                    )}
+                    {feature.name}
+                  </li>
+                ))}
+              </ul>
+              <Button
+                onClick={() => handleSubscribe(plan.priceId)}
+                disabled={isLoading || !plan.priceId}
+                className="relative z-30 w-full text-black bg-white hover:bg-gray-200"
               >
-                {/* Text and Features */}
-                
-                <div className="relative z-20">
-                  
-                  <h2 className="mb-4 text-2xl font-bold text-white">
-                    {plan.name}
-                  </h2>
-                  <p className="mb-6 text-4xl font-bold text-white">
-                    ₹{plan.price}
-                    <span className="text-lg font-normal text-gray-400">
-                      {plan.name === "Enterprise" ? "/year" : "/month"}
-                    </span>
-                  </p>
-                  <ul className="flex-grow mb-8">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li
-                        key={featureIndex}
-                        className="flex items-center mb-3 text-gray-300"
-                      >
-                        {!feature.available ? (
-                          <X className="w-5 h-5 mr-2 text-red-500" />
-                        ) : (
-                          <CheckIcon className="w-5 h-5 mr-2 text-green-500" />
-                        )}
-                        {feature.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Hover Background Effect */}
-                <AnimatePresence>
-                  {hovered && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute inset-0 z-10 w-full h-full"
-                    >
-                      <CanvasRevealEffect
-                        animationSpeed={5}
-                        containerClassName="bg-transparent"
-                        colors={[
-                          [59, 130, 246],
-                          [139, 92, 246],
-                        ]}
-                        opacities={[0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.4, 0.4, 0.4, 1]}
-                        dotSize={2}
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Button */}
-                <Button
-                  onClick={() => plan.priceId && handleSubscribe(plan.priceId)}
-                  disabled={isLoading || !plan.priceId}
-                  className="relative z-30 w-full text-black bg-white hover:bg-gray-200"
-                >
-                  {isLoading ? "Processing..." : "Choose Plan"}
-                </Button>
-              </div>
-            );
-          })}
+                {isLoading ? "Processing..." : "Choose Plan"}
+              </Button>
+            </div>
+          ))}
         </div>
-        <div className="flex justify-end">
-  <Link href="/support">
-    <div className="px-6 py-2 text-base font-bold text-white transition duration-300 rounded-md hover:underline ">
-      Need Help? Contact Support
-    </div>
-  </Link>
-</div>
- 
+        <div className="flex justify-end mt-8">
+          <Link href="/support">
+            <div className="px-6 py-2 text-base font-bold text-white transition duration-300 rounded-md hover:underline">
+              Need Help? Contact Support
+            </div>
+          </Link>
+        </div>
       </main>
-      </div>
+    </div>
   );
 }
-
-
-

@@ -64,7 +64,7 @@ export default function Home() {
               </RainbowButton>
               <RainbowButton>
                 <Link
-                  href="/features"
+                  href="/docs"
                   className="px-4 py-3 text-base text-black transition duration-300 ease-in-out transform sm:px-7 sm:text-lg"
                 >
                   Learn More
@@ -84,7 +84,7 @@ export default function Home() {
               </RainbowButton>
               <RainbowButton>
                 <Link
-                  href="/features"
+                  href="/docs"
                   className="px-4 py-3 text-base text-black transition duration-300 ease-in-out transform sm:px-7 sm:text-lg"
                 >
                   Learn More

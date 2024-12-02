@@ -56,9 +56,9 @@ const NovemberDiscount = ({ handleSubscribe }: { handleSubscribe: (priceId: stri
   const enterpriseDiscountPrice = 1999; // ₹1999/year for Enterprise
 
   return (
-    <div className="relative flex flex-col items-center justify-center p-6 mb-8 overflow-hidden text-center rounded-lg shadow-lg bg-gradient-to-r from-indigo-600 to-purple-600 bg-[length:200%_100%] animate-bgShift">
+    <div className="relative flex flex-col items-center justify-center p-6 mb-8 overflow-hidden text-center rounded-lg shadow-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-[length:200%_100%] animate-bgShift">
       <h2 className="mb-4 text-3xl font-bold text-white">
-        November Special Discount! 🎉
+        Black Special Discount! 🎉
       </h2>
       <p className="mb-6 text-lg text-gray-200">
         Get up to <span className="font-bold text-white">50% OFF</span> on our Pro and Enterprise plans for this month

@@ -1,14 +1,14 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Inter } from "next/font/google";
+import { DM_Sans} from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
 import { Light } from "three";
 
 
-const inter = Inter({ subsets: ["latin"] });
+const font = DM_Sans({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Caption Craft AI",
   description: "AI that Generate Socialmedia Captions",
@@ -29,7 +29,7 @@ export default function RootLayout({
       }}
     >
       <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.className} bg-black text-white antialiased`}>
+        <body className={`${font.className} bg-black text-white antialiased`}>
           <ThemeProvider attribute="class" defaultTheme="dark">
             {children}
             <Toaster/>

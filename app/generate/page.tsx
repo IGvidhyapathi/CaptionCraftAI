@@ -19,15 +19,8 @@
       Linkedin,
       Clock,
       Zap,
-      Star,
       Verified,
-      RecycleIcon,
-      Trash,
-      Trash2,
       Youtube,
-      Flame,
-      LucideShieldAlert,
-      LucideVerified,
       Check,
     } from "lucide-react";
     import { GoogleGenerativeAI, Part } from "@google/generative-ai";
@@ -101,6 +94,7 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
     
       const [contentType, setContentType] = useState(contentTypes[0].value);
       const [prompt, setPrompt] = useState("");
+      const [isGenerateDialogOpen, setIsGenerateDialogOpen] = useState(false);
       const [placeholderText, setPlaceholderText] = useState("Write Something to Create Wonders!");
       const [generatedContent, setGeneratedContent] = useState<string[]>([]);
       const [isLoading, setIsLoading] = useState(false);
@@ -609,22 +603,54 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
                     
                   )}
 
-                  <Button
-                    onClick={handleGenerate}
-                    disabled={!prompt.trim()}
-                    className="w-full py-3 text-white transition-colors bg-blue-600 hover:bg-blue-700 rounded-xl"
-                  >
-                    
-      
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      `Generate Content (${POINTS_PER_GENERATION} points)`
-                    )}
-                  </Button>
+<Button
+  onClick={() => setIsGenerateDialogOpen(true)} // Open dialog on button click
+  disabled={!prompt.trim()}
+  className="w-full py-3 text-white transition-colors bg-blue-600 hover:bg-blue-700 rounded-xl"
+>
+  {isLoading ? (
+    <>
+      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+      Generating...
+    </>
+  ) : (
+    `Generate Content (${POINTS_PER_GENERATION} points)`
+  )}
+</Button>
+
+<AlertDialog open={isGenerateDialogOpen} onOpenChange={setIsGenerateDialogOpen}>
+  <AlertDialogTrigger asChild>
+    <div />
+  </AlertDialogTrigger>
+
+  {/* Dialog Content */}
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Confirm Generation</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action will deduct <strong>{POINTS_PER_GENERATION} points</strong> from your account. 
+        Please review your prompt before proceeding.This process cannot be reversed.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel
+        className="px-4 py-2 text-black bg-white rounded-md hover:text-white hover:bg-black"
+        onClick={() => setIsGenerateDialogOpen(false)}
+      >
+        Cancel
+      </AlertDialogCancel>
+      <AlertDialogAction
+        className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+        onClick={() => {
+          setIsGenerateDialogOpen(false); // Close the dialog
+          handleGenerate(); // Trigger generation
+        }}
+      >
+        Confirm & Generate
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
                   <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <AlertDialogTrigger asChild>
           <button

@@ -30,7 +30,7 @@ const SupportPage = () => {
       <h3 className="text-xl font-semibold text-gray-200 text-accent">Help and Support</h3>
       <p className="mt-2 text-gray-300">Submit a ticket to our support team or email support@captioncraftai.dev directly</p>
       <div className="mt-6">
-        <Link href="/support/file-complaint" passHref>
+        <Link href="https://forms.zohopublic.in/cvidhyapathi1555gm1/form/Support/formperma/egn0zlcbOfqvRDXGQrgbWNDfBwSHWS2qrip_l8XF0PM" passHref>
           <Button className="p-3 text-white transition duration-300 transform bg-red-900 rounded hover:bg-red-700 hover:scale-105 hover:translate-y-1" aria-label="File a Complaint">
             Submit Ticket
           </Button>
@@ -43,7 +43,7 @@ const SupportPage = () => {
       <h3 className="text-xl font-semibold text-gray-200 text-accent">Sales</h3>
       <p className="mt-2 text-gray-300">Connect with our sales team to talk about pricing, enterprise contracts, or to request a demo.</p>
       <div className="mt-auto">
-        <Link href="/file-complaint" passHref>
+        <Link href="/support/meeting" passHref>
           <Button className="p-3 text-white transition duration-300 transform rounded bg-neutral-950 hover:bg-neutral-900 hover:scale-105 hover:translate-y-1" aria-label="Submit Sales Ticket">
             Talk to Sales
           </Button>

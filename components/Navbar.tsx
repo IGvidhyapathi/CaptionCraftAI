@@ -39,7 +39,7 @@ export function Navbar() {
             <Link href="/" className="flex items-center space-x-2">
               <img
                 src="/icons/logo.svg"
-                className="w-8 h-8 text-blue-800"
+                className="w-8 h-8 text-red-800"
                 aria-hidden="true"
               />
               <span className="text-xl font-bold text-white sm:text-2xl">

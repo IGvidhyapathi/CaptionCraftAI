@@ -22,6 +22,7 @@
       Verified,
       Youtube,
       Check,
+      TicketIcon,
     } from "lucide-react";
     import { GoogleGenerativeAI, Part } from "@google/generative-ai";
     import ReactMarkdown from "react-markdown";
@@ -98,7 +99,9 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
       const [placeholderText, setPlaceholderText] = useState("Write Something to Create Wonders!");
       const [generatedContent, setGeneratedContent] = useState<string[]>([]);
       const [isLoading, setIsLoading] = useState(false);
+      const [previewImage, setPreviewImage] = useState<string | null>(null);
       const [image, setImage] = useState<File | null>(null);
+      const [uploadedImages, setUploadedImages] = useState<File[]>([]);
       const [userPoints, setUserPoints] = useState<number | null>(null);
       const [history, setHistory] = useState<HistoryItem[]>([]);
       const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -391,9 +394,37 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
       }
 
       const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
-          setImage(event.target.files[0]);
+        if (event.target.files) {
+          const newImages = Array.from(event.target.files);
+    
+          // Set the last uploaded image for AI processing
+          setImage(newImages[newImages.length - 1]);
+    
+          // Add all uploaded images to the list
+          setUploadedImages((prevImages) => [...prevImages, ...newImages]);
         }
+      };
+    
+      const handleRemoveImage = (index: number) => {
+        setUploadedImages((prevImages) => {
+          const updatedImages = [...prevImages];
+          updatedImages.splice(index, 1);
+          return updatedImages;
+        });
+    
+        // Update AI image if the removed image was the latest one
+        if (uploadedImages[index] === image) {
+          setImage(null);
+        }
+      };
+    
+      const handleShowImage = (img: File) => {
+        const imageUrl = URL.createObjectURL(img);
+        setPreviewImage(imageUrl); // Set the image URL for modal preview
+      };
+    
+      const handleCloseModal = () => {
+        setPreviewImage(null); // Close the modal by clearing the preview image
       };
 
       return (
@@ -549,27 +580,73 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
                       <label className="block mb-2 text-sm font-medium text-gray-300">
                         Upload Image
                       </label>
-                      <div className="flex items-center space-x-3">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                          id="image-upload"
-                        />
-                        <label
-                          htmlFor="image-upload"
-                          className="flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
-                        >
-                          <Upload className="w-5 h-5 mr-2" />
-                          <span>Upload Image</span>
-                        </label>
-                        {image && (
-                          <span className="flex text-sm text-gray-400 ">
-                            Image Uploaded <Check className="w-5 h-5 ml-2 text-green-500 "/>
-                          </span>
-                        )}
-                      </div>
+                      <div className="flex flex-col items-center space-x-3 sm:flex-row sm:space-x-4">
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageUpload}
+    className="hidden"
+    id="image-upload"
+    multiple
+  />
+  <label
+    htmlFor="image-upload"
+    className="flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
+  >
+    <span>Upload Images</span>
+  </label>
+  {image && (
+    <span className="flex mt-2 text-sm text-gray-400 sm:mt-0">
+      Image Uploaded <Check className="w-5 h-5 ml-2 text-green-500" />
+    </span>
+  )}
+</div>
+
+{/* Display List of Uploaded Images */}
+{uploadedImages.length > 0 && (
+  <div className="mt-4">
+    <h3 className="text-lg font-semibold text-gray-900">Uploaded Images:</h3>
+    <ul className="space-y-2">
+      {uploadedImages.map((img, index) => (
+        <li key={index} className="flex flex-col items-center justify-between p-2 bg-gray-800 rounded-lg sm:flex-row">
+          <span className="w-full text-sm text-white sm:w-auto">{img.name}</span>
+          <div className="flex mt-2 space-x-4 sm:space-x-6 sm:mt-0">
+            {/* Show Image Button */}
+            <button
+              onClick={() => handleShowImage(img)}
+              className="px-4 py-2 font-semibold text-white transition duration-300 bg-blue-600 rounded-lg shadow-md hover:bg-blue-700"
+            >
+              Show Image
+            </button>
+            {/* Remove Button */}
+            <button
+              onClick={() => handleRemoveImage(index)}
+              className="px-4 py-2 font-semibold text-white transition duration-300 bg-red-600 rounded-lg shadow-md hover:bg-red-700"
+            >
+              Remove
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+{/* Image Preview Modal */}
+{previewImage && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="p-4 bg-white rounded-lg">
+      <img src={previewImage} alt="Preview" className="max-w-full max-h-96" />
+      <button
+        onClick={handleCloseModal}
+        className="px-4 py-2 mt-4 text-white bg-red-500 rounded hover:bg-red-600"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
+
                     </div>
                     
                   )}
@@ -578,27 +655,73 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
                       <label className="block mb-2 text-sm font-medium text-gray-300">
                         Upload Image
                       </label>
-                      <div className="flex items-center space-x-3">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                          id="image-upload"
-                        />
-                        <label
-                          htmlFor="image-upload"
-                          className="flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
-                        >
-                          <Upload className="w-5 h-5 mr-2" />
-                          <span>Upload Image</span>
-                        </label>
-                        {image && (
-                          <span className="text-sm text-gray-400">
-                            {image.name}
-                          </span>
-                        )}
-                      </div>
+                      <div className="flex flex-col items-center space-x-3 sm:flex-row sm:space-x-4">
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageUpload}
+    className="hidden"
+    id="image-upload"
+    multiple
+  />
+  <label
+    htmlFor="image-upload"
+    className="flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
+  >
+    <span>Upload Images</span>
+  </label>
+  {image && (
+    <span className="flex mt-2 text-sm text-gray-400 sm:mt-0">
+      Image Uploaded <Check className="w-5 h-5 ml-2 text-green-500" />
+    </span>
+  )}
+</div>
+
+{/* Display List of Uploaded Images */}
+{uploadedImages.length > 0 && (
+  <div className="mt-4">
+    <h3 className="text-lg font-semibold text-gray-900">Uploaded Images:</h3>
+    <ul className="space-y-2">
+      {uploadedImages.map((img, index) => (
+        <li key={index} className="flex flex-col items-center justify-between p-2 bg-gray-800 rounded-lg sm:flex-row">
+          <span className="w-full text-sm text-white sm:w-auto">{img.name}</span>
+          <div className="flex mt-2 space-x-4 sm:space-x-6 sm:mt-0">
+            {/* Show Image Button */}
+            <button
+              onClick={() => handleShowImage(img)}
+              className="px-4 py-2 font-semibold text-white transition duration-300 bg-blue-600 rounded-lg shadow-md hover:bg-blue-700"
+            >
+              Show Image
+            </button>
+            {/* Remove Button */}
+            <button
+              onClick={() => handleRemoveImage(index)}
+              className="px-4 py-2 font-semibold text-white transition duration-300 bg-red-600 rounded-lg shadow-md hover:bg-red-700"
+            >
+              Remove
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
+{/* Image Preview Modal */}
+{previewImage && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="p-4 bg-white rounded-lg">
+      <img src={previewImage} alt="Preview" className="max-w-full max-h-96" />
+      <button
+        onClick={handleCloseModal}
+        className="px-4 py-2 mt-4 text-white bg-red-500 rounded hover:bg-red-600"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
+
                     </div>
                     
                   )}

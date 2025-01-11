@@ -105,25 +105,30 @@ export async function saveGeneratedContent(
   userId: string,
   content: string,
   prompt: string,
-  contentType: string
+  contentType: string,
+  images: string | null // image parameter (base64 or URL)
 ) {
   try {
+    // Insert into the generated_content table
     const [savedContent] = await db
       .insert(GeneratedContent)
       .values({
-        userId: sql`(SELECT id FROM ${Users} WHERE stripe_customer_id = ${userId})`,
+        userId: sql`(SELECT id FROM ${Users} WHERE stripe_customer_id = ${userId})`, // Dynamic user ID query
         content,
         prompt,
         contentType,
+        images, // Passing the images data (base64 or URL) to the images column
       })
-      .returning()
+      .returning() // Ensures the inserted row is returned
       .execute();
-    return savedContent;
+
+    return savedContent; // Return the saved content
   } catch (error) {
     console.error("Error saving generated content:", error);
-    return null;
+    return null; // Return null in case of an error
   }
 }
+
 
 export async function getGeneratedContentHistory(
   userId: string,
@@ -137,6 +142,7 @@ export async function getGeneratedContentHistory(
         prompt: GeneratedContent.prompt,
         contentType: GeneratedContent.contentType,
         createdAt: GeneratedContent.createdAt,
+        images: GeneratedContent.images, // Retrieve the images field
       })
       .from(GeneratedContent)
       .where(

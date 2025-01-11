@@ -1,8 +1,6 @@
     "use client";
     import { useState, useEffect } from "react";
     import { Button } from "@/components/ui/button";
-    import { Input } from "@/components/ui/input";
-    import { Textarea } from "@/components/ui/textarea";
     import {
       Select,
       SelectContent,
@@ -23,6 +21,7 @@
       Youtube,
       Check,
       TicketIcon,
+      Image,
     } from "lucide-react";
     import { GoogleGenerativeAI, Part } from "@google/generative-ai";
     import ReactMarkdown from "react-markdown";
@@ -63,7 +62,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
 
 
 
@@ -87,6 +85,8 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
       prompt: string;
       content: string;
       createdAt: Date;
+      imageUrl?: string;
+      
     }
 
     export default function GenerateContent() {
@@ -208,29 +208,27 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
           userPoints < POINTS_PER_GENERATION
         ) {
           toast({
-            variant:"destructive",
+            variant: "destructive",
             title: "Uh oh! Something went wrong.",
             description: "No points to Generate Content",
-          })
+          });
           return;
         }
         setIsLoading(true);
         try {
           const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-
+      
           let promptText = `Generate ${contentType} content about "${prompt}".`;
           if (contentType === "twitter") {
-            promptText +=
-              " Provide a thread of 5 tweets, each under 280 characters.";
+            promptText += " Provide a thread of 5 tweets, each under 280 characters.";
           }
           let youtube = `Generate ${contentType} content about "${prompt}".`;
           if (contentType === "youtube") {
-            promptText +=
-              " Provide a complete youtube description without any breaks only paragraph";
+            promptText += " Provide a complete youtube description without any breaks only paragraph";
           }
-
+      
           let imagePart: Part | null = null;
-          if (contentType === "instagram" && image) {
+          if ((contentType === "instagram" || contentType === "pinterest") && image) {
             const reader = new FileReader();
             const imageData = await new Promise<string>((resolve) => {
               reader.onload = (e) => {
@@ -240,11 +238,10 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
                   resolve("");
                 }
               };
-              reader.readAsDataURL(image);
+              reader.readAsDataURL(image); // Convert image to base64 string
             });
-            
-
-            const base64Data = imageData.split(",")[1];
+      
+            const base64Data = imageData.split(",")[1]; // Extract the base64 data (without the "data:image..." prefix)
             if (base64Data) {
               imagePart = {
                 inlineData: {
@@ -253,73 +250,40 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
                 },
               };
             }
-            promptText +=
-              " Describe the image and incorporate it into the caption.";
+      
+            promptText += " Describe the image and incorporate it into the caption."; // Add image description to prompt
           }
-          
-          if (contentType === "pinterest" && image) {
-            const reader = new FileReader();
-            const imageData = await new Promise<string>((resolve) => {
-              reader.onload = (e) => {
-                if (e.target && typeof e.target.result === "string") {
-                  resolve(e.target.result);
-                } else {
-                  resolve("");
-                }
-              };
-              reader.readAsDataURL(image);
-            });
-            
-
-            const base64Data = imageData.split(",")[1];
-            if (base64Data) {
-              imagePart = {
-                inlineData: {
-                  data: base64Data,
-                  mimeType: image.type,
-                },
-              };
-            }
-            promptText +=
-              "Describe the image and incorporate it into the caption.";
-          }
-
+      
           const parts: (string | Part)[] = [promptText];
-          if (imagePart) parts.push(imagePart);
-
+          if (imagePart) parts.push(imagePart); // Add image part if available
+      
           const result = await model.generateContent(parts);
           const generatedText = result.response.text();
-
-          
-
+      
           let content: string[];
           if (contentType === "twitter") {
-            content = generatedText
-              .split("\n\n")
-              .filter((tweet) => tweet.trim() !== "");
+            content = generatedText.split("\n\n").filter((tweet) => tweet.trim() !== "");
           } else {
             content = [generatedText];
           }
-
+      
           setGeneratedContent(content);
-
+      
           // Update points
-          const updatedUser = await updateUserPoints(
-            user.id,
-            -POINTS_PER_GENERATION
-          );
+          const updatedUser = await updateUserPoints(user.id, -POINTS_PER_GENERATION);
           if (updatedUser) {
             setUserPoints(updatedUser.points);
           }
-
+      
           // Save generated content
           const savedContent = await saveGeneratedContent(
             user.id,
             content.join("\n\n"),
             prompt,
-            contentType
+            contentType,
+            imagePart ? imagePart.inlineData.data : null // Pass base64 image if present
           );
-
+      
           if (savedContent) {
             setHistory((prevHistory) => [savedContent, ...prevHistory]);
           }
@@ -330,6 +294,7 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
           setIsLoading(false);
         }
       };
+      
 
       const handleHistoryItemClick = (item: HistoryItem) => {
         setSelectedHistoryItem(item);
@@ -340,8 +305,12 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
             ? item.content.split("\n\n")
             : [item.content]
         );
+        if (item.imageUrl) {
+          setPreviewImage(item.imageUrl); // Set image preview
+        } else {
+          setPreviewImage(null);
+        }
       };
-
       const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text);
       };
@@ -431,6 +400,8 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
       
         <div className="min-h-screen text-white bg-gradient-to-br from-gray-900 to-black">
           <Navbar />
+          
+      
           <div className="container px-4 py-8 mx-auto mb-8 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-8 mt-14 lg:grid-cols-3">
               {/* Left sidebar - History */}
@@ -469,10 +440,17 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
                       <p className="text-sm text-gray-300 truncate">
                         {item.prompt}
                       </p>
-                      <div className="flex items-center mt-2 text-xs text-gray-400">
-                        <Clock className="w-3 h-3 mr-1" />
-                        {new Date(item.createdAt).toLocaleString()}
-                      </div>
+                      {item.imageUrl && (
+        <img
+          src={item.imageUrl}
+          alt="Generated content"
+          className="mt-2 rounded-lg max-h-20"
+        />
+      )}
+      <div className="flex items-center mt-2 text-xs text-gray-400">
+        <Clock className="w-3 h-3 mr-1" />
+        {new Date(item.createdAt).toLocaleString()}
+      </div>
                       <TooltipProvider>
       <Tooltip>
         <div className="relative flex items-center">
@@ -593,7 +571,7 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
     htmlFor="image-upload"
     className="flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
   >
-    <span>Upload Images</span>
+    <span className="flex gap-2 mt-auto"><Image size={20}/>Upload Images</span>
   </label>
   {image && (
     <span className="flex mt-2 text-sm text-gray-400 sm:mt-0">
@@ -668,7 +646,7 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
     htmlFor="image-upload"
     className="flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
   >
-    <span>Upload Images</span>
+     <span className="flex gap-2 mt-auto"><Image size={20}/>Upload Images</span>
   </label>
   {image && (
     <span className="flex mt-2 text-sm text-gray-400 sm:mt-0">
@@ -813,48 +791,64 @@ import AnimatedGradientText from "@/components/magicui/animated-gradient-text";
 
                 {/* Generated content display */}
                 {(selectedHistoryItem || generatedContent.length > 0) && (
-                  <div className="p-6 space-y-4 bg-gray-800 rounded-2xl">
-                    <h2 className="text-2xl font-semibold text-blue-400">
-                      {selectedHistoryItem ? "History Item" : "Generated Content"}
-                    </h2>
-                    {contentType === "twitter" ? (
-                      <div className="space-y-4">
-                        {(selectedHistoryItem
-                          ? selectedHistoryItem.content.split("\n\n")
-                          : generatedContent
-                        ).map((tweet, index) => (
-                          <div
-                            key={index}
-                            className="relative p-4 bg-gray-700 rounded-xl"
-                          >
-                            <ReactMarkdown className="mb-2 text-sm prose prose-invert max-w-none">
-                              {tweet}
-                            </ReactMarkdown>
-                            <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
-                              <span>
-                                {tweet.length}/{MAX_TWEET_LENGTH}
-                              </span>
-                              <Button
-                                onClick={() => copyToClipboard(tweet)}
-                                className="p-2 text-white transition-colors bg-gray-600 rounded-full hover:bg-gray-500"
-                              >
-                                <Copy className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="p-4 bg-gray-700 rounded-xl">
-                        <ReactMarkdown className="text-sm prose prose-invert max-w-none">
-                          {selectedHistoryItem
-                            ? selectedHistoryItem.content
-                            : generatedContent[0]}
-                        </ReactMarkdown>
-                      </div>
-                    )}
-                  </div>
-                )}
+  <div className="p-6 space-y-4 bg-gray-800 rounded-2xl">
+    <h2 className="text-2xl font-semibold text-blue-400">
+      {selectedHistoryItem ? "History Item" : "Generated Content"}
+    </h2>
+    {contentType === "twitter" ? (
+      <div className="space-y-4">
+        {(selectedHistoryItem
+          ? selectedHistoryItem.content.split("\n\n")
+          : generatedContent
+        ).map((tweet, index) => (
+          <div key={index} className="relative p-4 bg-gray-700 rounded-xl">
+            <ReactMarkdown className="mb-2 text-sm prose prose-invert max-w-none">
+              {tweet}
+            </ReactMarkdown>
+            {selectedHistoryItem && selectedHistoryItem.imageUrl && (
+              <div className="mt-4">
+                <img
+                  src={selectedHistoryItem.imageUrl} // Assuming `image` is the image URL in the history item
+                  alt="History item image"
+                  className="h-auto max-w-full rounded-xl"
+                />
+              </div>
+            )}
+            <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
+              <span>
+                {tweet.length}/{MAX_TWEET_LENGTH}
+              </span>
+              <Button
+                onClick={() => copyToClipboard(tweet)}
+                className="p-2 text-white transition-colors bg-gray-600 rounded-full hover:bg-gray-500"
+              >
+                <Copy className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div className="p-4 bg-gray-700 rounded-xl">
+        <ReactMarkdown className="text-sm prose prose-invert max-w-none">
+          {selectedHistoryItem
+            ? selectedHistoryItem.content
+            : generatedContent[0]}
+        </ReactMarkdown>
+        {selectedHistoryItem && selectedHistoryItem.imageUrl && (
+          <div className="mt-4">
+            <img
+              src={selectedHistoryItem.imageUrl} // Assuming `image` is the image URL in the history item
+              alt="History item image"
+              className="h-auto max-w-full rounded-xl"
+            />
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+)}
+
 
                 {/* Content preview */}
                 {generatedContent.length > 0 && (

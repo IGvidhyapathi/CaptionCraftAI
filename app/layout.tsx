@@ -29,7 +29,7 @@ export default function RootLayout({
       }}
     >
       <html lang="en" suppressHydrationWarning>
-        <body className={`${font.className} bg-black text-white antialiased`}>
+        <body className={`${font.className} bg-black text-white antialiased font-normal `}>
           <ThemeProvider attribute="class" defaultTheme="dark">
             {children}
             <Toaster/>

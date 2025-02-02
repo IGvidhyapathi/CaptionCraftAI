@@ -1,54 +1,60 @@
-    "use client";
-    import { useState, useEffect } from "react";
-    import { Button } from "@/components/ui/button";
-    import {
-      Select,
-      SelectContent,
-      SelectItem,
-      SelectTrigger,
-      SelectValue,
-    } from "@/components/ui/select";
-    import {
-      Loader2,
-      Upload,
-      Copy,
-      Twitter,
-      Instagram,
-      Linkedin,
-      Clock,
-      Zap,
-      Verified,
-      Youtube,
-      Check,
-      TicketIcon,
-      Image,
-    } from "lucide-react";
-    import { GoogleGenerativeAI, Part } from "@google/generative-ai";
-    import ReactMarkdown from "react-markdown";
-    import { Navbar } from "@/components/Navbar";
-    import { SignInButton, useUser } from "@clerk/nextjs";
-    import { useRouter } from "next/navigation";
-    import {
-      getUserPoints,
-      saveGeneratedContent,
-      updateUserPoints,
-      getGeneratedContentHistory,
-      createOrUpdateUser,
-    } from "@/utils/db/actions";
-    import { TwitterMock } from "@/components/social-mocks/TwitterMock";
-    import { InstagramMock } from "@/components/social-mocks/InstagramMock";
-    import { LinkedInMock } from "@/components/social-mocks/LinkedInMock";
-    import { PinterestMock } from "@/components/social-mocks/PinterestMock";
-    import { YoutubeMock } from "@/components/social-mocks/YoutubeMock";
-    import Link from "next/link";
-    import {
-      Tooltip,
-      TooltipContent,
-      TooltipProvider,
-      TooltipTrigger,
-    } from "@/components/ui/tooltip"
-  import { toast } from "@/components/hooks/use-toast";
-import { FaPinterest } from "react-icons/fa";
+"use client";
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Loader2,
+  Upload,
+  Copy,
+  Twitter,
+  Instagram,
+  Linkedin,
+  Clock,
+  Zap,
+  Verified,
+  Youtube,
+  Check,
+  TicketIcon,
+  Image,
+  FileText,
+  Sparkles,
+  Trash2,
+  X,
+  Layout,
+  ChevronDown,
+} from "lucide-react";
+import { GoogleGenerativeAI, Part } from "@google/generative-ai";
+import ReactMarkdown from "react-markdown";
+import { Navbar } from "@/components/Navbar";
+import { SignInButton, useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import {
+  getUserPoints,
+  saveGeneratedContent,
+  updateUserPoints,
+  getGeneratedContentHistory,
+  createOrUpdateUser,
+} from "@/utils/db/actions";
+import { TwitterMock } from "@/components/social-mocks/TwitterMock";
+import { InstagramMock } from "@/components/social-mocks/InstagramMock";
+import { LinkedInMock } from "@/components/social-mocks/LinkedInMock";
+import { PinterestMock } from "@/components/social-mocks/PinterestMock";
+import { YoutubeMock } from "@/components/social-mocks/YoutubeMock";
+import Link from "next/link";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { toast } from "@/components/hooks/use-toast";
+import { FaPinterest, FaTiktok, FaFacebook } from "react-icons/fa";
 import VoiceTyper from "@/components/voice/voicetyper";
 import { RainbowButton } from "@/components/magicui/rainbow-button";
 import {
@@ -62,808 +68,767 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { HistorySidebar } from "./components/HistorySidebar";
+import { PointsDisplay } from "./components/PointsDisplay";
+import { ContentTypeSelector } from "./components/ContentTypeSelector";
+import { PromptInput } from "./components/PromptInput";
+import { ImageUpload } from "./components/ImageUpload";
+import { GeneratedContent } from "./components/GeneratedContent";
+import { POINTS_PER_GENERATION } from "./constants";
 
+const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
+const contentTypes = [
+  { value: "twitter", label: "Twitter Thread", icon: Twitter },
+  { value: "instagram", label: "Instagram Caption", icon: Instagram },
+  { value: "instagram_story", label: "Instagram Story", icon: Layout },
+  { value: "linkedin", label: "LinkedIn Post", icon: Linkedin },
+  { value: "youtube", label: "Youtube Description", icon: Youtube },
+  { value: "pinterest", label: "Pinterest", icon: FaPinterest },
+  { value: "tiktok", label: "TikTok Caption", icon: FaTiktok },
+  { value: "facebook", label: "Facebook Post", icon: FaFacebook },
+  { value: "blog", label: "Blog Post", icon: FileText },
+];
 
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-    const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
+const toneOptions = [
+  { value: "professional", label: "Professional" },
+  { value: "casual", label: "Casual" },
+  { value: "humorous", label: "Humorous" },
+  { value: "formal", label: "Formal" },
+  { value: "inspirational", label: "Inspirational" },
+  { value: "educational", label: "Educational" },
+  { value: "storytelling", label: "Storytelling" },
+  { value: "promotional", label: "Promotional" },
+];
 
-    const contentTypes = [
-      { value: "twitter", label: "Twitter Thread" },
-      { value: "instagram", label: "Instagram Caption" },
-      { value: "linkedin", label: "LinkedIn Post" },
-      { value: "youtube", label: "Youtube Description" },
-      { value: "pinterest", label: "Pinterest" },
-    ];
+const MAX_TWEET_LENGTH = 280;
 
-    const MAX_TWEET_LENGTH = 280;
-    const POINTS_PER_GENERATION = 5;
+const PLATFORM_LIMITS = {
+  twitter: 280,
+  instagram: 2200,
+  instagram_story: 2200,
+  linkedin: 3000,
+  facebook: 63206,
+  tiktok: 2200,
+  pinterest: 500,
+  blog: 100000,
+  youtube: 5000
+};
 
-    interface HistoryItem {
-      id: number;
-      contentType: string;
-      prompt: string;
-      content: string;
-      createdAt: Date;
-      imageUrl?: string;
-      
+interface HistoryItem {
+  id: number;
+  contentType: string;
+  prompt: string;
+  content: string;
+  createdAt: Date;
+  imageUrl?: string;
+}
+
+export default function GenerateContent() {
+  const { isLoaded, isSignedIn, user } = useUser();
+  const router = useRouter();
+
+  const [contentType, setContentType] = useState(contentTypes[0].value);
+  const [prompt, setPrompt] = useState("");
+  const [isGenerateDialogOpen, setIsGenerateDialogOpen] = useState(false);
+  const [placeholderText, setPlaceholderText] = useState("Write Something to Create Wonders!");
+  const [generatedContent, setGeneratedContent] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [image, setImage] = useState<File | null>(null);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [userPoints, setUserPoints] = useState<number | null>(null);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  const [selectedHistoryItem, setSelectedHistoryItem] =
+    useState<HistoryItem | null>(null);
+  const [selectedTone, setSelectedTone] = useState(toneOptions[0].value);
+  const [characterCount, setCharacterCount] = useState(0);
+  const [suggestedHashtags, setSuggestedHashtags] = useState<string[]>([]);
+  const [selectedHashtags, setSelectedHashtags] = useState<string[]>([]);
+  const [isGeneratingHashtags, setIsGeneratingHashtags] = useState(false);
+  const [promptSuggestions, setPromptSuggestions] = useState<string[]>([]);
+  const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
+  const [showMobileHistory, setShowMobileHistory] = useState(false);
+
+  useEffect(() => {
+    if (!apiKey) {
+      console.error("Gemini API key is not set");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push("/");
+    } else if (isSignedIn && user) {
+      console.log("User loaded:", user);
+      fetchUserPoints();
+      fetchContentHistory();
+    }
+  }, [isLoaded, isSignedIn, user, router]);
+
+  const fetchUserPoints = async () => {
+    if (user?.id) {
+      console.log("Fetching points for user:", user.id);
+      const points = await getUserPoints(user.id);
+      console.log("Fetched points:", points);
+      setUserPoints(points);
+      if (points === 0) {
+        console.log("User has 0 points. Attempting to create/update user.");
+        const updatedUser = await createOrUpdateUser(
+          user.id,
+          user.emailAddresses[0].emailAddress,
+          user.fullName || ""
+        );
+        console.log("Updated user:", updatedUser);
+        if (updatedUser) {
+          setUserPoints(updatedUser.points);
+        }
+      }
+    }
+  };
+  const placeholderOptions = [
+    "Write an Instagram caption for an Independence Day flag image...",
+    "Create a Twitter post about your favorite summer vacation...",
+    "Generate a YouTube description for a cooking tutorial video...",
+    "Write a LinkedIn story about your career journey...",
+    "Describe your creative idea for the next viral Instagram post...",
+    "Craft a Twitter post about a recent tech event you attended...",
+    "Write a YouTube description for a workout routine video...",
+    "Create an Instagram caption for a motivational quote with a sunset image...",
+    "Write a LinkedIn article summarizing the latest industry trends...",
+    "Generate a YouTube description for a gaming walkthrough video...",
+    "Write an Instagram caption for a new product launch with a stylish photo...",
+    "Create a Twitter post sharing your thoughts on a trending news story...",
+    "Generate a YouTube description for an educational video on data science...",
+    "Write a LinkedIn post about a recent project you completed at work...",
+    "Craft a creative Instagram caption for a food recipe post...",
+    "Create a Twitter post about a recent personal achievement...",
+    "Write a YouTube description for a vlog about your travel experiences...",
+    "Generate a LinkedIn story about a professional milestone in your career...",
+    "Write an Instagram caption for a fitness transformation journey...",
+    "Craft a Twitter post celebrating World Environment Day..."
+  ];
+  useEffect(() => {
+    // Change placeholder every 3 seconds
+    const interval = setInterval(() => {
+      setPlaceholderText((prevText) => {
+        const nextIndex = (placeholderOptions.indexOf(prevText) + 1) % placeholderOptions.length;
+        return placeholderOptions[nextIndex];
+      });
+    }, 2000); // Updated to 3000ms for 3 seconds
+
+    return () => clearInterval(interval); // Clean up interval on unmount
+  }, []);
+
+  const fetchContentHistory = async () => {
+    if (user?.id) {
+      const contentHistory = await getGeneratedContentHistory(user.id);
+      setHistory(contentHistory);
+    }
+  };
+  const handleClear = () => {
+    
+    setSelectedHistoryItem(null);
+    setGeneratedContent([]);
+    setPrompt(""); 
+    console.log("Cleared selected history content and typed prompt");
+    toast({
+      variant: "default",
+      title: "Prompt Cleared",
+    });
+    setIsDialogOpen(false);
+  };
+
+  const generateHashtags = async () => {
+    if (!prompt || !genAI) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter a prompt first.",
+      });
+      return;
     }
 
-    export default function GenerateContent() {
-      const { isLoaded, isSignedIn, user } = useUser();
-      const router = useRouter();
-    
-      const [contentType, setContentType] = useState(contentTypes[0].value);
-      const [prompt, setPrompt] = useState("");
-      const [isGenerateDialogOpen, setIsGenerateDialogOpen] = useState(false);
-      const [placeholderText, setPlaceholderText] = useState("Write Something to Create Wonders!");
-      const [generatedContent, setGeneratedContent] = useState<string[]>([]);
-      const [isLoading, setIsLoading] = useState(false);
-      const [previewImage, setPreviewImage] = useState<string | null>(null);
-      const [image, setImage] = useState<File | null>(null);
-      const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-      const [userPoints, setUserPoints] = useState<number | null>(null);
-      const [history, setHistory] = useState<HistoryItem[]>([]);
-      const [isDialogOpen, setIsDialogOpen] = useState(false);
+    setIsGeneratingHashtags(true);
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+      const result = await model.generateContent(`
+        Generate 8 relevant, trending, and engaging hashtags for the following content: "${prompt}"
+        Consider the platform: ${contentType}
+        Make them specific and targeted.
+        Return ONLY the hashtags, separated by spaces, without any additional text or explanation.
+        Format: #hashtag1 #hashtag2 #hashtag3
+      `);
       
-      const [selectedHistoryItem, setSelectedHistoryItem] =
-        useState<HistoryItem | null>(null);
-
-      useEffect(() => {
-        if (!apiKey) {
-          console.error("Gemini API key is not set");
-        }
-      }, []);
-
-      useEffect(() => {
-        if (isLoaded && !isSignedIn) {
-          router.push("/");
-        } else if (isSignedIn && user) {
-          console.log("User loaded:", user);
-          fetchUserPoints();
-          fetchContentHistory();
-        }
-      }, [isLoaded, isSignedIn, user, router]);
-
-      const fetchUserPoints = async () => {
-        if (user?.id) {
-          console.log("Fetching points for user:", user.id);
-          const points = await getUserPoints(user.id);
-          console.log("Fetched points:", points);
-          setUserPoints(points);
-          if (points === 0) {
-            console.log("User has 0 points. Attempting to create/update user.");
-            const updatedUser = await createOrUpdateUser(
-              user.id,
-              user.emailAddresses[0].emailAddress,
-              user.fullName || ""
-            );
-            console.log("Updated user:", updatedUser);
-            if (updatedUser) {
-              setUserPoints(updatedUser.points);
-            }
-          }
-        }
-      };
-      const placeholderOptions = [
-        "Write an Instagram caption for an Independence Day flag image...",
-        "Create a Twitter post about your favorite summer vacation...",
-        "Generate a YouTube description for a cooking tutorial video...",
-        "Write a LinkedIn story about your career journey...",
-        "Describe your creative idea for the next viral Instagram post...",
-        "Craft a Twitter post about a recent tech event you attended...",
-        "Write a YouTube description for a workout routine video...",
-        "Create an Instagram caption for a motivational quote with a sunset image...",
-        "Write a LinkedIn article summarizing the latest industry trends...",
-        "Generate a YouTube description for a gaming walkthrough video...",
-        "Write an Instagram caption for a new product launch with a stylish photo...",
-        "Create a Twitter post sharing your thoughts on a trending news story...",
-        "Generate a YouTube description for an educational video on data science...",
-        "Write a LinkedIn post about a recent project you completed at work...",
-        "Craft a creative Instagram caption for a food recipe post...",
-        "Create a Twitter post about a recent personal achievement...",
-        "Write a YouTube description for a vlog about your travel experiences...",
-        "Generate a LinkedIn story about a professional milestone in your career...",
-        "Write an Instagram caption for a fitness transformation journey...",
-        "Craft a Twitter post celebrating World Environment Day..."
-      ];
-      useEffect(() => {
-        // Change placeholder every 3 seconds
-        const interval = setInterval(() => {
-          setPlaceholderText((prevText) => {
-            const nextIndex = (placeholderOptions.indexOf(prevText) + 1) % placeholderOptions.length;
-            return placeholderOptions[nextIndex];
-          });
-        }, 2000); // Updated to 3000ms for 3 seconds
-    
-        return () => clearInterval(interval); // Clean up interval on unmount
-      }, []);
-    
-    
-
-      const fetchContentHistory = async () => {
-        if (user?.id) {
-          const contentHistory = await getGeneratedContentHistory(user.id);
-          setHistory(contentHistory);
-        }
-      };
-      const handleClear = () => {
-        
-        setSelectedHistoryItem(null);
-        setGeneratedContent([]);
-        setPrompt(""); 
-        console.log("Cleared selected history content and typed prompt");
+      const response = result.response.text();
+      const hashtags = response.split(" ").filter(tag => tag.startsWith("#") && tag.length > 1);
+      
+      if (hashtags.length > 0) {
+        setSuggestedHashtags(hashtags);
         toast({
-          variant: "default",
-          title: "Prompt Cleared",
+          title: "Hashtags Generated",
+          description: "Click on hashtags to add them to your content.",
         });
-        setIsDialogOpen(false);
-      };
+      } else {
+        throw new Error("No valid hashtags generated");
+      }
+    } catch (error) {
+      console.error("Error generating hashtags:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to generate hashtags. Please try again.",
+      });
+    } finally {
+      setIsGeneratingHashtags(false);
+    }
+  };
 
-      const handleGenerate = async () => {
-        if (
-          !genAI ||
-          !user?.id ||
-          userPoints === null ||
-          userPoints < POINTS_PER_GENERATION
-        ) {
+  const getPromptSuggestions = async () => {
+    if (!prompt || !genAI) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter a prompt first.",
+      });
+      return;
+    }
+
+    setIsGeneratingSuggestions(true);
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+      const result = await model.generateContent(`
+        Based on this prompt: "${prompt}"
+        Platform: ${contentType}
+        Tone: ${selectedTone}
+        
+        Suggest 3 ways to make it more engaging and effective.
+        Focus on:
+        1. Adding emotional appeal
+        2. Improving clarity and impact
+        3. Increasing engagement potential
+        
+        Return only the suggestions, separated by | without any numbering or additional text.
+        Each suggestion should be a complete, actionable sentence.
+      `);
+      
+      const suggestions = result.response.text()
+        .split("|")
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+      
+      if (suggestions.length > 0) {
+        setPromptSuggestions(suggestions);
+        toast({
+          title: "Suggestions Generated",
+          description: "Click on a suggestion to use it.",
+        });
+      } else {
+        throw new Error("No valid suggestions generated");
+      }
+    } catch (error) {
+      console.error("Error generating suggestions:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to generate suggestions. Please try again.",
+      });
+    } finally {
+      setIsGeneratingSuggestions(false);
+    }
+  };
+
+  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const text = e.target.value;
+    setPrompt(text);
+    setCharacterCount(text.length);
+  };
+
+  const toggleHashtag = (hashtag: string) => {
+    setSelectedHashtags(prev =>
+      prev.includes(hashtag)
+        ? prev.filter(h => h !== hashtag)
+        : [...prev, hashtag]
+    );
+  };
+
+  const handleGenerate = async () => {
+    if (!genAI) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "AI service is not initialized. Please try again later.",
+      });
+      return;
+    }
+
+    if (!user?.id) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please sign in to generate content.",
+      });
+      return;
+    }
+
+    if (userPoints === null || userPoints < POINTS_PER_GENERATION) {
+      toast({
+        variant: "destructive",
+        title: "Insufficient Points",
+        description: "You need more points to generate content. Please purchase more points.",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    setIsGenerateDialogOpen(false);
+
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+      let promptText = `Generate creative and engaging ${contentType} content about "${prompt}" using a ${selectedTone} tone. Make it natural, authentic, and optimized for the platform.`;
+      
+      if (selectedHashtags.length > 0) {
+        promptText += ` Include these hashtags naturally in the content: ${selectedHashtags.join(" ")}`;
+      }
+
+      // Platform-specific prompting
+      switch (contentType) {
+        case "instagram_story":
+          promptText = `Create 5 engaging Instagram Story ideas about "${prompt}" using a ${selectedTone} tone. For each story idea, include:
+            1. Story format (poll, quiz, slider, question, countdown)
+            2. Visual description
+            3. Text overlay suggestion
+            4. Interactive element
+            5. Call-to-action
+
+            Format each story idea with clear separators and bullet points.`;
+          break;
+        case "twitter":
+          promptText += " Create a thread of 5 tweets, each under 280 characters. Make them engaging and shareable.";
+          break;
+        case "instagram":
+          promptText += " Create an engaging Instagram caption that drives engagement. Include line breaks for readability and a call-to-action.";
+          break;
+        case "youtube":
+          promptText += " Create a complete YouTube description with timestamps, key points, and relevant links. Format it for maximum readability.";
+          break;
+      }
+
+      // Handle image if present
+      let imagePart: Part | null = null;
+      if ((contentType === "instagram" || contentType === "pinterest") && image) {
+        try {
+          const imageData = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              if (e.target?.result && typeof e.target.result === "string") {
+                resolve(e.target.result);
+              } else {
+                reject(new Error("Failed to read image"));
+              }
+            };
+            reader.onerror = () => reject(new Error("Failed to read image"));
+            reader.readAsDataURL(image);
+          });
+
+          const base64Data = imageData.split(",")[1];
+          imagePart = {
+            inlineData: {
+              data: base64Data,
+              mimeType: image.type,
+            },
+          };
+          promptText += " Analyze the uploaded image and incorporate its description naturally into the caption.";
+        } catch (error) {
+          console.error("Error processing image:", error);
           toast({
             variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: "No points to Generate Content",
+            title: "Error",
+            description: "Failed to process the image. Generating content without image analysis.",
           });
-          return;
         }
-        setIsLoading(true);
-        try {
-          const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-      
-          let promptText = `Generate ${contentType} content about "${prompt}".`;
-          if (contentType === "twitter") {
-            promptText += " Provide a thread of 5 tweets, each under 280 characters.";
-          }
-          let youtube = `Generate ${contentType} content about "${prompt}".`;
-          if (contentType === "youtube") {
-            promptText += " Provide a complete youtube description without any breaks only paragraph";
-          }
-      
-          let imagePart: Part | null = null;
-          if ((contentType === "instagram" || contentType === "pinterest") && image) {
-            const reader = new FileReader();
-            const imageData = await new Promise<string>((resolve) => {
-              reader.onload = (e) => {
-                if (e.target && typeof e.target.result === "string") {
-                  resolve(e.target.result);
-                } else {
-                  resolve("");
-                }
-              };
-              reader.readAsDataURL(image); // Convert image to base64 string
-            });
-      
-            const base64Data = imageData.split(",")[1]; // Extract the base64 data (without the "data:image..." prefix)
-            if (base64Data) {
-              imagePart = {
-                inlineData: {
-                  data: base64Data,
-                  mimeType: image.type,
-                },
-              };
-            }
-      
-            promptText += " Describe the image and incorporate it into the caption."; // Add image description to prompt
-          }
-      
-          const parts: (string | Part)[] = [promptText];
-          if (imagePart) parts.push(imagePart); // Add image part if available
-      
-          const result = await model.generateContent(parts);
-          const generatedText = result.response.text();
-      
-          let content: string[];
-          if (contentType === "twitter") {
-            content = generatedText.split("\n\n").filter((tweet) => tweet.trim() !== "");
-          } else {
-            content = [generatedText];
-          }
-      
-          setGeneratedContent(content);
-      
-          // Update points
-          const updatedUser = await updateUserPoints(user.id, -POINTS_PER_GENERATION);
-          if (updatedUser) {
-            setUserPoints(updatedUser.points);
-          }
-      
-          // Save generated content
-          const savedContent = await saveGeneratedContent(
-            user.id,
-            content.join("\n\n"),
-            prompt,
-            contentType,
-            imagePart ? imagePart.inlineData.data : null // Pass base64 image if present
-          );
-      
-          if (savedContent) {
-            setHistory((prevHistory) => [savedContent, ...prevHistory]);
-          }
-        } catch (error) {
-          console.error("Error generating content:", error);
-          setGeneratedContent(["An error occurred while generating content."]);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      
-
-      const handleHistoryItemClick = (item: HistoryItem) => {
-        setSelectedHistoryItem(item);
-        setContentType(item.contentType);
-        setPrompt(item.prompt);
-        setGeneratedContent(
-          item.contentType === "twitter"
-            ? item.content.split("\n\n")
-            : [item.content]
-        );
-        if (item.imageUrl) {
-          setPreviewImage(item.imageUrl); // Set image preview
-        } else {
-          setPreviewImage(null);
-        }
-      };
-      const copyToClipboard = (text: string) => {
-        navigator.clipboard.writeText(text);
-      };
-
-      const renderContentMock = () => {
-        if (generatedContent.length === 0) return null;
-
-        switch (contentType) {
-          case "twitter":
-            return <TwitterMock content={generatedContent} />;
-          case "instagram":
-            return <InstagramMock content={generatedContent[0]} />;
-          case "linkedin":
-            return <LinkedInMock content={generatedContent[0]} />;
-          case "pinterest":
-              return <PinterestMock content={generatedContent[0]} />;
-          case "youtube":
-            return <YoutubeMock content={generatedContent[0]} />;
-          default:
-            return null;
-        }
-      };
-
-      if (!isLoaded) {
-        return <div>Loading...</div>;
       }
 
-      if (!isSignedIn) {
-        return (
-          <div className="flex items-center justify-center min-h-screen bg-slate-950">
-            <div className="text-center bg-[#111111] p-8 rounded-lg shadow-lg">
-              <h1 className="mb-4 text-3xl font-bold text-white">
-                Welcome to captionCraft AI
-              </h1>
-              <p className="mb-6 text-gray-400">
-                To start generating amazing content, please sign in or create an
-                account.
-              </p>
-              <SignInButton mode="modal">
-                <Button className="px-6 py-2 text-white bg-blue-600 hover:bg-blue-700">
-                  Sign In / Sign Up
-                </Button>
-              </SignInButton>
-              <p className="mt-4 text-sm text-gray-500">
-                By signing in, you agree to our Terms of Service and Privacy Policy.
-              </p>
-            </div>
-          </div>
-        );
+      // Generate content
+      const parts: (string | Part)[] = [promptText];
+      if (imagePart) parts.push(imagePart);
+
+      const result = await model.generateContent(parts);
+      const generatedText = result.response.text();
+
+      let content: string[];
+      if (contentType === "twitter") {
+        content = generatedText.split("\n\n").filter((tweet) => tweet.trim() !== "");
+      } else {
+        content = [generatedText];
       }
 
-      const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-          const newImages = Array.from(event.target.files);
+      setGeneratedContent(content);
+
+      // Update points
+      const updatedUser = await updateUserPoints(user.id, -POINTS_PER_GENERATION);
+      if (updatedUser) {
+        setUserPoints(updatedUser.points);
+      }
+
+      // Save generated content
+      const savedContent = await saveGeneratedContent(
+        user.id,
+        content.join("\n\n"),
+        prompt,
+        contentType,
+        imagePart ? imagePart.inlineData.data : null
+      );
+
+      if (savedContent) {
+        setHistory((prevHistory) => [savedContent, ...prevHistory]);
+      }
+
+      toast({
+        title: "Content Generated",
+        description: "Your content has been generated successfully!",
+      });
+
+    } catch (error) {
+      console.error("Error generating content:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "An error occurred while generating content. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+
+  const handleHistoryItemClick = (item: HistoryItem) => {
+    setSelectedHistoryItem(item);
+    setContentType(item.contentType);
+    setPrompt(item.prompt);
+    setGeneratedContent(
+      item.contentType === "twitter"
+        ? item.content.split("\n\n")
+        : [item.content]
+    );
+    if (item.imageUrl) {
+      setPreviewImage(item.imageUrl); // Set image preview
+    } else {
+      setPreviewImage(null);
+    }
+  };
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
+
+  const InstagramStoryMock = ({ content }: { content: string }) => {
+    const storyIdeas = content.split('\n\n').filter(idea => idea.trim() !== '');
     
-          // Set the last uploaded image for AI processing
-          setImage(newImages[newImages.length - 1]);
-    
-          // Add all uploaded images to the list
-          setUploadedImages((prevImages) => [...prevImages, ...newImages]);
-        }
-      };
-    
-      const handleRemoveImage = (index: number) => {
-        setUploadedImages((prevImages) => {
-          const updatedImages = [...prevImages];
-          updatedImages.splice(index, 1);
-          return updatedImages;
-        });
-    
-        // Update AI image if the removed image was the latest one
-        if (uploadedImages[index] === image) {
-          setImage(null);
-        }
-      };
-    
-      const handleShowImage = (img: File) => {
-        const imageUrl = URL.createObjectURL(img);
-        setPreviewImage(imageUrl); // Set the image URL for modal preview
-      };
-    
-      const handleCloseModal = () => {
-        setPreviewImage(null); // Close the modal by clearing the preview image
-      };
-
-      return (
-      
-        <div className="min-h-screen text-white bg-gradient-to-br from-gray-900 to-black">
-          <Navbar />
-          
-      
-          <div className="container px-4 py-8 mx-auto mb-8 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 gap-8 mt-14 lg:grid-cols-3">
-              {/* Left sidebar - History */}
-              <div className="lg:col-span-1 bg-gray-800 rounded-2xl p-6 h-[calc(100vh-12rem)] overflow-y-auto">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-semibold text-blue-400">History</h2>
-                  <Clock className="w-6 h-6 text-blue-400" />
-                </div>
-                <div className="space-y-4">
-                  {history.map((item) => (
-                    <div
-                      key={item.id}
-                      className="p-4 transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
-                      onClick={() => handleHistoryItemClick(item)}
-                    >
-                      <div className="flex items-center mb-2">
-                        {item.contentType === "twitter" && (
-                          <Twitter className="w-5 h-5 mr-2 text-blue-400" />
-                        )}
-                        {item.contentType === "instagram" && (
-                          <Instagram className="w-5 h-5 mr-2 text-pink-400" />
-                        )}
-                        {item.contentType === "linkedin" && (
-                          <Linkedin className="w-5 h-5 mr-2 text-blue-600" />
-                        )}
-                        {item.contentType === "youtube" && (
-                          <Youtube className="w-5 h-5 mr-2 text-red-600" />
-                        )}
-                        {item.contentType === "pinterest" && (
-                          <FaPinterest className="w-5 h-5 mr-2 text-red-600" />
-                        )}
-                        <span className="text-sm font-medium">
-                          {item.contentType}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-300 truncate">
-                        {item.prompt}
-                      </p>
-                      {item.imageUrl && (
-        <img
-          src={item.imageUrl}
-          alt="Generated content"
-          className="mt-2 rounded-lg max-h-20"
-        />
-      )}
-      <div className="flex items-center mt-2 text-xs text-gray-400">
-        <Clock className="w-3 h-3 mr-1" />
-        {new Date(item.createdAt).toLocaleString()}
-      </div>
-                      <TooltipProvider>
-      <Tooltip>
-        <div className="relative flex items-center">
-          <TooltipTrigger className="flex items-center ml-auto">
-            <Verified size={20} color="green" />
-            <span className="ml-1.5 text-sm">Verified</span>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>The Information Provided are Double Checked by Gemini AI</p>
-          </TooltipContent>
-        </div>
-      </Tooltip>
-    </TooltipProvider>
-    </div>
-
-                  ))}
-                </div>
-              </div>
-
-              {/* Main content area */}
-              <div className="space-y-6 lg:col-span-2">
-                {/* Points display */}
-                <div className="flex items-center justify-between p-6 bg-gray-800 rounded-2xl">
-                  <div className="flex items-center">
-                    <Zap className="w-8 h-8 mr-3 text-yellow-400" />
-                    <div>
-                      <p className="text-sm text-gray-400">Available Points</p>
-                      <p className="text-2xl font-bold text-yellow-400">
-                        {userPoints !== null ? userPoints : "Loading..."}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  
-                  <RainbowButton className="px-4 py-2 text-sm">
-                    
-                    <Link href="/pricing">
-                    Get More Points
-                    </Link>
-                
-                  </RainbowButton>
-                  
-                </div>
-
-                {/* Content generation form */}
-                <div className="p-6 space-y-6 bg-gray-800 rounded-2xl">
-                  <div>
-                    <label className="flex mb-2 text-sm font-medium text-gray-300 ">
-                      Content Type
-                      <div className="w-8 h-8 ml-auto text-green-500"></div>
-                    </label>
-                    <Select
-                      onValueChange={setContentType}
-                      defaultValue={contentType}
-                    >
-                      <SelectTrigger className="w-full bg-gray-700 border-none rounded-xl">
-                        <SelectValue placeholder="Select content type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {contentTypes.map((type) => (
-                          <SelectItem key={type.value} value={type.value}>
-                            <div className="flex items-center">
-                              {type.value === "twitter" && (
-                                <Twitter className="w-4 h-4 mr-2 text-blue-400" />
-                              )}
-                              {type.value === "instagram" && (
-                                <Instagram className="w-4 h-4 mr-2 text-pink-400" />
-                              )}
-                              {type.value === "linkedin" && (
-                                <Linkedin className="w-4 h-4 mr-2 text-blue-600" />
-                              )}
-                              {type.value === "youtube" && (
-                                <Youtube className="w-4 h-4 mr-2 text-red-600" />
-                              )}
-                              {type.value === "pinterest" && (
-                                <FaPinterest className="w-4 h-4 mr-2 text-red-600" />
-                              )}
-                              {type.label}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    
-      <label htmlFor="prompt" className="block mb-2 text-sm font-medium text-gray-300">
-        Prompt
-      </label>
-      <div className="relative">
-       
-        <textarea
-          id="prompt"
-          placeholder={placeholderText} // Dynamic placeholder
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          rows={4}
-          className="w-full p-4 bg-gray-700 border border-gray-600 shadow-md resize-none rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-        <VoiceTyper setPrompt={setPrompt} />
-      </div>
-    </div>
-                  {contentType === "instagram" &&  (
-                    <div>
-                      <label className="block mb-2 text-sm font-medium text-gray-300">
-                        Upload Image
-                      </label>
-                      <div className="flex flex-col items-center space-x-3 sm:flex-row sm:space-x-4">
-  <input
-    type="file"
-    accept="image/*"
-    onChange={handleImageUpload}
-    className="hidden"
-    id="image-upload"
-    multiple
-  />
-  <label
-    htmlFor="image-upload"
-    className="flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
-  >
-    <span className="flex gap-2 mt-auto"><Image size={20}/>Upload Images</span>
-  </label>
-  {image && (
-    <span className="flex mt-2 text-sm text-gray-400 sm:mt-0">
-      Image Uploaded <Check className="w-5 h-5 ml-2 text-green-500" />
-    </span>
-  )}
-</div>
-
-{/* Display List of Uploaded Images */}
-{uploadedImages.length > 0 && (
-  <div className="mt-4">
-    <h3 className="text-lg font-semibold text-gray-900">Uploaded Images:</h3>
-    <ul className="space-y-2">
-      {uploadedImages.map((img, index) => (
-        <li key={index} className="flex flex-col items-center justify-between p-2 bg-gray-800 rounded-lg sm:flex-row">
-          <span className="w-full text-sm text-white sm:w-auto">{img.name}</span>
-          <div className="flex mt-2 space-x-4 sm:space-x-6 sm:mt-0">
-            {/* Show Image Button */}
-            <button
-              onClick={() => handleShowImage(img)}
-              className="px-4 py-2 font-semibold text-white transition duration-300 bg-blue-600 rounded-lg shadow-md hover:bg-blue-700"
-            >
-              Show Image
-            </button>
-            {/* Remove Button */}
-            <button
-              onClick={() => handleRemoveImage(index)}
-              className="px-4 py-2 font-semibold text-white transition duration-300 bg-red-600 rounded-lg shadow-md hover:bg-red-700"
-            >
-              Remove
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-
-{/* Image Preview Modal */}
-{previewImage && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="p-4 bg-white rounded-lg">
-      <img src={previewImage} alt="Preview" className="max-w-full max-h-96" />
-      <button
-        onClick={handleCloseModal}
-        className="px-4 py-2 mt-4 text-white bg-red-500 rounded hover:bg-red-600"
-      >
-        Close
-      </button>
-    </div>
-  </div>
-)}
-
-                    </div>
-                    
-                  )}
-                   {contentType === "pinterest" &&  (
-                    <div>
-                      <label className="block mb-2 text-sm font-medium text-gray-300">
-                        Upload Image
-                      </label>
-                      <div className="flex flex-col items-center space-x-3 sm:flex-row sm:space-x-4">
-  <input
-    type="file"
-    accept="image/*"
-    onChange={handleImageUpload}
-    className="hidden"
-    id="image-upload"
-    multiple
-  />
-  <label
-    htmlFor="image-upload"
-    className="flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors bg-gray-700 cursor-pointer rounded-xl hover:bg-gray-600"
-  >
-     <span className="flex gap-2 mt-auto"><Image size={20}/>Upload Images</span>
-  </label>
-  {image && (
-    <span className="flex mt-2 text-sm text-gray-400 sm:mt-0">
-      Image Uploaded <Check className="w-5 h-5 ml-2 text-green-500" />
-    </span>
-  )}
-</div>
-
-{/* Display List of Uploaded Images */}
-{uploadedImages.length > 0 && (
-  <div className="mt-4">
-    <h3 className="text-lg font-semibold text-gray-900">Uploaded Images:</h3>
-    <ul className="space-y-2">
-      {uploadedImages.map((img, index) => (
-        <li key={index} className="flex flex-col items-center justify-between p-2 bg-gray-800 rounded-lg sm:flex-row">
-          <span className="w-full text-sm text-white sm:w-auto">{img.name}</span>
-          <div className="flex mt-2 space-x-4 sm:space-x-6 sm:mt-0">
-            {/* Show Image Button */}
-            <button
-              onClick={() => handleShowImage(img)}
-              className="px-4 py-2 font-semibold text-white transition duration-300 bg-blue-600 rounded-lg shadow-md hover:bg-blue-700"
-            >
-              Show Image
-            </button>
-            {/* Remove Button */}
-            <button
-              onClick={() => handleRemoveImage(index)}
-              className="px-4 py-2 font-semibold text-white transition duration-300 bg-red-600 rounded-lg shadow-md hover:bg-red-700"
-            >
-              Remove
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-
-{/* Image Preview Modal */}
-{previewImage && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="p-4 bg-white rounded-lg">
-      <img src={previewImage} alt="Preview" className="max-w-full max-h-96" />
-      <button
-        onClick={handleCloseModal}
-        className="px-4 py-2 mt-4 text-white bg-red-500 rounded hover:bg-red-600"
-      >
-        Close
-      </button>
-    </div>
-  </div>
-)}
-
-                    </div>
-                    
-                  )}
-
-<Button
-  onClick={() => setIsGenerateDialogOpen(true)} // Open dialog on button click
-  disabled={!prompt.trim()}
-  className="w-full py-3 text-white transition-colors bg-blue-600 hover:bg-blue-700 rounded-xl"
->
-  {isLoading ? (
-    <>
-      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-      Generating...
-    </>
-  ) : (
-    `Generate Content (${POINTS_PER_GENERATION} points)`
-  )}
-</Button>
-
-<AlertDialog open={isGenerateDialogOpen} onOpenChange={setIsGenerateDialogOpen}>
-  <AlertDialogTrigger asChild>
-    <div />
-  </AlertDialogTrigger>
-
-  {/* Dialog Content */}
-  <AlertDialogContent>
-    <AlertDialogHeader>
-      <AlertDialogTitle>Confirm Generation</AlertDialogTitle>
-      <AlertDialogDescription>
-        This action will deduct <strong>{POINTS_PER_GENERATION} points</strong> from your account. 
-        Please review your prompt before proceeding.This process cannot be reversed.
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel
-        className="px-4 py-2 text-black bg-white rounded-md hover:text-white hover:bg-black"
-        onClick={() => setIsGenerateDialogOpen(false)}
-      >
-        Cancel
-      </AlertDialogCancel>
-      <AlertDialogAction
-        className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-        onClick={() => {
-          setIsGenerateDialogOpen(false); // Close the dialog
-          handleGenerate(); // Trigger generation
-        }}
-      >
-        Confirm & Generate
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
-                  <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <AlertDialogTrigger asChild>
-          <button
-            className="block px-4 py-2 ml-auto text-white bg-red-600 rounded-md hover:bg-red-700"
-            onClick={() => setIsDialogOpen(true)}
-          >
-            Clear Prompt
-          </button>
-        </AlertDialogTrigger>
-
-        {/* Dialog Content */}
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. It will clear your prompt and remove
-              any generated content.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel
-              className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-black"
-              onClick={() => setIsDialogOpen(false)}
-            >
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700"
-              onClick={handleClear}
-            >
-              Clear
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-                </div>
-
-                {/* Generated content display */}
-                {(selectedHistoryItem || generatedContent.length > 0) && (
-  <div className="p-6 space-y-4 bg-gray-800 rounded-2xl">
-    <h2 className="text-2xl font-semibold text-blue-400">
-      {selectedHistoryItem ? "History Item" : "Generated Content"}
-    </h2>
-    {contentType === "twitter" ? (
+    return (
       <div className="space-y-4">
-        {(selectedHistoryItem
-          ? selectedHistoryItem.content.split("\n\n")
-          : generatedContent
-        ).map((tweet, index) => (
-          <div key={index} className="relative p-4 bg-gray-700 rounded-xl">
-            <ReactMarkdown className="mb-2 text-sm prose prose-invert max-w-none">
-              {tweet}
-            </ReactMarkdown>
-            {selectedHistoryItem && selectedHistoryItem.imageUrl && (
-              <div className="mt-4">
-                <img
-                  src={selectedHistoryItem.imageUrl} // Assuming `image` is the image URL in the history item
-                  alt="History item image"
-                  className="h-auto max-w-full rounded-xl"
-                />
+        {storyIdeas.map((idea, index) => (
+          <div key={index} className="bg-gray-800/50 rounded-xl p-4 border border-purple-500/20">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold">
+                {index + 1}
               </div>
-            )}
-            <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
-              <span>
-                {tweet.length}/{MAX_TWEET_LENGTH}
-              </span>
-              <Button
-                onClick={() => copyToClipboard(tweet)}
-                className="p-2 text-white transition-colors bg-gray-600 rounded-full hover:bg-gray-500"
-              >
-                <Copy className="w-4 h-4" />
-              </Button>
+              <h3 className="text-sm font-medium text-purple-400">Story Idea {index + 1}</h3>
+            </div>
+            <div className="space-y-2 text-sm text-gray-300">
+              {idea.split('\n').map((line, lineIndex) => (
+                <p key={lineIndex} className="pl-4 border-l-2 border-purple-500/20">
+                  {line}
+                </p>
+              ))}
             </div>
           </div>
         ))}
       </div>
-    ) : (
-      <div className="p-4 bg-gray-700 rounded-xl">
-        <ReactMarkdown className="text-sm prose prose-invert max-w-none">
-          {selectedHistoryItem
-            ? selectedHistoryItem.content
-            : generatedContent[0]}
-        </ReactMarkdown>
-        {selectedHistoryItem && selectedHistoryItem.imageUrl && (
-          <div className="mt-4">
-            <img
-              src={selectedHistoryItem.imageUrl} // Assuming `image` is the image URL in the history item
-              alt="History item image"
-              className="h-auto max-w-full rounded-xl"
-            />
-          </div>
-        )}
+    );
+  };
+
+  const renderContentMock = () => {
+    if (generatedContent.length === 0) return null;
+
+    switch (contentType) {
+      case "twitter":
+        return <TwitterMock content={generatedContent} />;
+      case "instagram":
+        return <InstagramMock content={generatedContent[0]} />;
+      case "instagram_story":
+        return <InstagramStoryMock content={generatedContent[0]} />;
+      case "linkedin":
+        return <LinkedInMock content={generatedContent[0]} />;
+      case "pinterest":
+        return <PinterestMock content={generatedContent[0]} />;
+      case "youtube":
+        return <YoutubeMock content={generatedContent[0]} />;
+      default:
+        return null;
+    }
+  };
+
+  const isOverCharacterLimit = characterCount > (PLATFORM_LIMITS[contentType as keyof typeof PLATFORM_LIMITS] || Infinity);
+
+  const clearPromptSuggestions = () => {
+    setPromptSuggestions([]);
+  };
+
+  const clearHashtagSuggestions = () => {
+    setSuggestedHashtags([]);
+    setSelectedHashtags([]);
+  };
+
+  if (!isLoaded) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-black">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
       </div>
-    )}
-  </div>
-)}
+    );
+  }
 
-
-                {/* Content preview */}
-                {generatedContent.length > 0 && (
-                  <div className="p-6 bg-gray-800 rounded-2xl">
-                    <h2 className="mb-4 text-2xl font-semibold text-blue-400">
-                      Preview
-                    </h2>
-                    {renderContentMock()}
-                  </div>
-                )}
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+        <div className="container mx-auto px-4 h-screen flex items-center justify-center">
+          <div className="w-full max-w-md">
+            <div className="relative bg-gray-800/50 p-8 rounded-2xl backdrop-blur-lg border border-gray-700/50 shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl" />
+              <div className="relative">
+                <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 text-center mb-4">
+                  Welcome to CaptionCraft AI
+                </h1>
+                <p className="text-gray-300 text-center mb-8">
+                  Create engaging content across all social platforms with the power of AI
+                </p>
+                <SignInButton mode="modal">
+                  <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-600 transition-all duration-200 transform hover:scale-105">
+                    Get Started
+                  </button>
+                </SignInButton>
+                <p className="mt-6 text-sm text-gray-400 text-center">
+                  By signing in, you agree to our Terms of Service and Privacy Policy
+                </p>
               </div>
             </div>
           </div>
-          </div>
-          
-        
-      );
+        </div>
+      </div>
+    );
+  }
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const newImages = Array.from(event.target.files);
+
+      // Set the last uploaded image for AI processing
+      setImage(newImages[newImages.length - 1]);
+
+      // Add all uploaded images to the list
+      setUploadedImages((prevImages) => [...prevImages, ...newImages]);
     }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setUploadedImages((prevImages) => {
+      const updatedImages = [...prevImages];
+      updatedImages.splice(index, 1);
+      return updatedImages;
+    });
+
+    // Update AI image if the removed image was the latest one
+    if (uploadedImages[index] === image) {
+      setImage(null);
+    }
+  };
+
+  const handleShowImage = (img: File) => {
+    const imageUrl = URL.createObjectURL(img);
+    setPreviewImage(imageUrl); // Set the image URL for modal preview
+  };
+
+  const handleCloseModal = () => {
+    setPreviewImage(null); // Close the modal by clearing the preview image
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <Navbar />
+      
+      <main className="container mx-auto px-4 py-4 sm:py-8">
+        {/* Mobile History Toggle Button */}
+        <div className="lg:hidden mb-4 mt-14">
+          <button
+            onClick={() => setShowMobileHistory(!showMobileHistory)}
+            className="w-full py-3 px-4 bg-gray-800/50 rounded-xl flex items-center justify-between"
+          >
+            <span className="text-gray-300 font-medium flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              History
+            </span>
+            <ChevronDown className={`w-4 h-4 text-gray-400 transform transition-transform ${showMobileHistory ? 'rotate-180' : ''}`} />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4 lg:mt-14">
+          {/* Mobile History Sidebar */}
+          <div className={`lg:hidden ${showMobileHistory ? 'block' : 'hidden'} mb-6`}>
+            <HistorySidebar 
+              history={history}
+              onHistoryItemClick={(item) => {
+                handleHistoryItemClick(item);
+                setShowMobileHistory(false);
+              }}
+            />
+          </div>
+
+          {/* Desktop History Sidebar */}
+          <div className="hidden lg:block lg:col-span-3">
+            <HistorySidebar 
+              history={history}
+              onHistoryItemClick={handleHistoryItemClick}
+            />
+          </div>
+
+          <div className="lg:col-span-9 space-y-4 sm:space-y-6">
+            <PointsDisplay userPoints={userPoints} />
+
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700/50">
+              <ContentTypeSelector
+                contentType={contentType}
+                selectedTone={selectedTone}
+                onContentTypeChange={setContentType}
+                onToneChange={setSelectedTone}
+              />
+
+              <div className="space-y-4">
+                <PromptInput
+                  prompt={prompt}
+                  contentType={contentType}
+                  characterCount={characterCount}
+                  isGeneratingSuggestions={isGeneratingSuggestions}
+                  isGeneratingHashtags={isGeneratingHashtags}
+                  placeholderText={placeholderText}
+                  onPromptChange={handlePromptChange}
+                  onGetSuggestions={getPromptSuggestions}
+                  onGenerateHashtags={generateHashtags}
+                />
+
+                {/* AI Suggestions Display */}
+                {promptSuggestions.length > 0 && (
+                  <div className="bg-gray-700/30 rounded-xl p-3 sm:p-4">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                      <h3 className="text-sm font-medium text-purple-400">AI Suggestions</h3>
+                      <button
+                        onClick={clearPromptSuggestions}
+                        className="p-1 hover:bg-gray-600 rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-gray-400" />
+                      </button>
+                    </div>
+                    <div className="space-y-2">
+                      {promptSuggestions.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          onClick={() => setPrompt(suggestion)}
+                          className="p-2 sm:p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-700/50 transition-all duration-200"
+                        >
+                          <p className="text-sm text-gray-300">{suggestion}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Hashtags Display */}
+                {suggestedHashtags.length > 0 && (
+                  <div className="bg-gray-700/30 rounded-xl p-3 sm:p-4">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                      <h3 className="text-sm font-medium text-blue-400">Generated Hashtags</h3>
+                      <button
+                        onClick={clearHashtagSuggestions}
+                        className="p-1 hover:bg-gray-600 rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-gray-400" />
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {suggestedHashtags.map((hashtag, index) => (
+                        <button
+                          key={index}
+                          onClick={() => toggleHashtag(hashtag)}
+                          className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm transition-all duration-200 ${
+                            selectedHashtags.includes(hashtag)
+                              ? 'bg-blue-500 text-white'
+                              : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50'
+                          }`}
+                        >
+                          {hashtag}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {(contentType === "instagram" || contentType === "pinterest") && (
+                  <ImageUpload
+                    image={image}
+                    uploadedImages={uploadedImages}
+                    onImageUpload={handleImageUpload}
+                    onRemoveImage={handleRemoveImage}
+                    onShowImage={handleShowImage}
+                  />
+                )}
+
+                <AlertDialog open={isGenerateDialogOpen} onOpenChange={setIsGenerateDialogOpen}>
+                  <AlertDialogTrigger asChild>
+                    <button
+                      disabled={!prompt.trim() || isLoading}
+                      className="w-full py-4 sm:py-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-medium text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 inline animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        `Generate Content (${POINTS_PER_GENERATION} points)`
+                      )}
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="bg-gray-800 border border-gray-700 w-[90%] sm:w-full max-w-lg mx-auto">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-white">Generate Content</AlertDialogTitle>
+                      <AlertDialogDescription className="text-gray-400">
+                        This will use {POINTS_PER_GENERATION} points from your account. Do you want to continue?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="sm:space-x-2">
+                      <AlertDialogCancel className="bg-gray-700 text-white hover:bg-gray-600 w-full sm:w-auto">Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleGenerate}
+                        className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 w-full sm:w-auto"
+                      >
+                        Generate
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </div>
+
+            <GeneratedContent
+              selectedHistoryItem={selectedHistoryItem}
+              generatedContent={generatedContent}
+              contentType={contentType}
+            />
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

@@ -1,5 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { FeedbackDialog } from "@/components/FeedbackDialog";
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import GenerateLayout from "@/app/generate/components/GenerateLayout";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -40,6 +44,7 @@ import {
   updateUserPoints,
   getGeneratedContentHistory,
   createOrUpdateUser,
+  getUserSubscription,
 } from "@/utils/db/actions";
 import { TwitterMock } from "@/components/social-mocks/TwitterMock";
 import { InstagramMock } from "@/components/social-mocks/InstagramMock";
@@ -135,11 +140,15 @@ export default function GenerateContent() {
   const [placeholderText, setPlaceholderText] = useState("Write Something to Create Wonders!");
   const [generatedContent, setGeneratedContent] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [estimatedTime, setEstimatedTime] = useState(0);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [userPoints, setUserPoints] = useState<number | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [hasShownFeedback, setHasShownFeedback] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const [selectedHistoryItem, setSelectedHistoryItem] =
@@ -152,6 +161,12 @@ export default function GenerateContent() {
   const [promptSuggestions, setPromptSuggestions] = useState<string[]>([]);
   const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
   const [showMobileHistory, setShowMobileHistory] = useState(false);
+  const [subscription, setSubscription] = useState<{
+    plan: string;
+    status: string;
+    currentPeriodEnd?: Date;
+    cancelAtPeriodEnd?: boolean;
+  }>({ plan: 'free', status: 'active' });
 
   useEffect(() => {
     if (!apiKey) {
@@ -165,9 +180,17 @@ export default function GenerateContent() {
     } else if (isSignedIn && user) {
       console.log("User loaded:", user);
       fetchUserPoints();
+      fetchUserSubscription();
       fetchContentHistory();
     }
   }, [isLoaded, isSignedIn, user, router]);
+
+  const fetchUserSubscription = async () => {
+    if (user?.id) {
+      const sub = await getUserSubscription(user.id);
+      setSubscription(sub);
+    }
+  };
 
   const fetchUserPoints = async () => {
     if (user?.id) {
@@ -355,7 +378,46 @@ export default function GenerateContent() {
     );
   };
 
+  // Countdown timer effect
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isGenerating && estimatedTime > 0) {
+      timer = setInterval(() => {
+        setEstimatedTime(prev => Math.max(0, prev - 1));
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isGenerating, estimatedTime]);
+
+  // Countdown timer effect
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isGenerating && estimatedTime > 0) {
+      timer = setInterval(() => {
+        setEstimatedTime(prev => Math.max(0, prev - 1));
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isGenerating, estimatedTime]);
+
   const handleGenerate = async () => {
+    // Set initial estimated time based on content type
+    const baseTime = 15; // Base time for any generation
+    const timePerPlatform = {
+      twitter: 20,
+      instagram: 15,
+      instagram_story: 15,
+      linkedin: 18,
+      pinterest: 15,
+      youtube: 25
+    };
+    setEstimatedTime(timePerPlatform[contentType as keyof typeof timePerPlatform] || baseTime);
+    setIsGenerating(true);
+
     if (!genAI) {
       toast({
         variant: "destructive",
@@ -475,17 +537,50 @@ export default function GenerateContent() {
         setUserPoints(updatedUser.points);
       }
 
-      // Save generated content
+      // Save generated content with image
+      let imageData = null;
+      if (image) {
+        try {
+          const reader = new FileReader();
+          const imageDataUrl = await new Promise<string>((resolve, reject) => {
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(image);
+          });
+          imageData = imageDataUrl;
+          console.log('Image converted to data URL successfully');
+        } catch (error) {
+          console.error('Error converting image to data URL:', error);
+        }
+      }
+
+      console.log('Saving content with image:', imageData ? 'Image present' : 'No image');
+      
       const savedContent = await saveGeneratedContent(
         user.id,
         content.join("\n\n"),
         prompt,
         contentType,
-        imagePart ? imagePart.inlineData.data : null
+        imageData
       );
 
       if (savedContent) {
+        console.log('Content saved successfully:', savedContent);
+        if (savedContent.images) {
+          console.log('Image URL from saved content:', savedContent.images);
+          setPreviewImage(savedContent.images);
+        }
+      }
+
+      if (savedContent) {
+        const isFirstGeneration = history.length === 0;
         setHistory((prevHistory) => [savedContent, ...prevHistory]);
+
+        // Show feedback dialog after first successful generation
+        if (isFirstGeneration && !hasShownFeedback) {
+          setShowFeedback(true);
+          setHasShownFeedback(true);
+        }
       }
 
       toast({
@@ -502,6 +597,8 @@ export default function GenerateContent() {
       });
     } finally {
       setIsLoading(false);
+      setIsGenerating(false);
+      setEstimatedTime(0);
     }
   };
   
@@ -554,19 +651,36 @@ export default function GenerateContent() {
   const renderContentMock = () => {
     if (generatedContent.length === 0) return null;
 
+    // Get the image URL from different sources in order of priority
+    let imageUrl: string | undefined;
+    
+    if (selectedHistoryItem?.images) {
+      // If viewing history item, use its saved image
+      imageUrl = selectedHistoryItem.images;
+    } else if (image) {
+      // If there's a newly uploaded image, create an object URL
+      imageUrl = URL.createObjectURL(image);
+    } else if (previewImage) {
+      // Fallback to any preview image
+      imageUrl = previewImage;
+    }
+
+    // Log the image URL for debugging
+    console.log('Using image URL:', imageUrl);
+
     switch (contentType) {
       case "twitter":
-        return <TwitterMock content={generatedContent} />;
+        return <TwitterMock content={generatedContent} image={imageUrl} />;
       case "instagram":
-        return <InstagramMock content={generatedContent[0]} />;
+        return <InstagramMock content={generatedContent[0]} image={imageUrl} />;
       case "instagram_story":
-        return <InstagramStoryMock content={generatedContent[0]} />;
+        return <InstagramStoryMock content={generatedContent[0]} image={imageUrl} />;
       case "linkedin":
-        return <LinkedInMock content={generatedContent[0]} />;
+        return <LinkedInMock content={generatedContent[0]} image={imageUrl} />;
       case "pinterest":
-        return <PinterestMock content={generatedContent[0]} />;
+        return <PinterestMock content={generatedContent[0]} image={imageUrl} />;
       case "youtube":
-        return <YoutubeMock content={generatedContent[0]} />;
+        return <YoutubeMock content={generatedContent[0]} image={imageUrl} />;
       default:
         return null;
     }
@@ -585,16 +699,23 @@ export default function GenerateContent() {
 
   if (!isLoaded) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-black">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-      </div>
+      <>
+        <Navbar />
+        <GenerateLayout>
+          <div className="flex items-center justify-center min-h-[50vh]">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+          </div>
+        </GenerateLayout>
+      </>
     );
   }
 
   if (!isSignedIn) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-        <div className="container mx-auto px-4 h-screen flex items-center justify-center">
+      <>
+        <Navbar />
+        <GenerateLayout>
+        <div className="container mx-auto px-4 min-h-[50vh] flex items-center justify-center">
           <div className="w-full max-w-md">
             <div className="relative bg-gray-800/50 p-8 rounded-2xl backdrop-blur-lg border border-gray-700/50 shadow-xl">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl" />
@@ -617,7 +738,8 @@ export default function GenerateContent() {
             </div>
           </div>
         </div>
-      </div>
+        </GenerateLayout>
+      </>
     );
   }
 
@@ -656,10 +778,14 @@ export default function GenerateContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <>
       <Navbar />
-      
-      <main className="container mx-auto px-4 py-4 sm:py-8">
+      <GenerateLayout>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="container mx-auto px-4 py-4 sm:py-8">
         {/* Mobile History Toggle Button */}
         <div className="lg:hidden mb-4 mt-14">
           <button
@@ -677,21 +803,53 @@ export default function GenerateContent() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4 lg:mt-14">
           {/* Mobile History Sidebar */}
           <div className={`lg:hidden ${showMobileHistory ? 'block' : 'hidden'} mb-6`}>
-            <HistorySidebar 
-              history={history}
-              onHistoryItemClick={(item) => {
-                handleHistoryItemClick(item);
-                setShowMobileHistory(false);
-              }}
-            />
+            <div className="flex flex-col space-y-4">
+              <div className="flex items-center space-x-2 bg-gray-800/50 px-3 py-2 rounded-xl border border-gray-700/50">
+                <span className="text-sm font-medium text-gray-300">Plan:</span>
+                <span className="px-2 py-1 text-xs font-medium rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                  {subscription.plan === 'free' ? 'Free' : 
+                   subscription.plan === 'pro' ? 'Pro' : 
+                   subscription.plan === 'premium' ? 'Premium' : 
+                   'Enterprise'}
+                </span>
+                {subscription.cancelAtPeriodEnd && subscription.currentPeriodEnd && (
+                  <span className="text-xs text-gray-400">
+                    (Expires: {new Date(subscription.currentPeriodEnd).toLocaleDateString()})
+                  </span>
+                )}
+              </div>
+              <HistorySidebar 
+                history={history}
+                onHistoryItemClick={(item) => {
+                  handleHistoryItemClick(item);
+                  setShowMobileHistory(false);
+                }}
+              />
+            </div>
           </div>
 
           {/* Desktop History Sidebar */}
           <div className="hidden lg:block lg:col-span-3">
-            <HistorySidebar 
-              history={history}
-              onHistoryItemClick={handleHistoryItemClick}
-            />
+            <div className="flex flex-col space-y-4">
+              <div className="flex items-center space-x-2 bg-gray-800/50 px-3 py-2 rounded-xl border border-gray-700/50">
+                <span className="text-sm font-medium text-gray-300">Plan:</span>
+                <span className="px-2 py-1 text-xs font-medium rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                  {subscription.plan === 'free' ? 'Free' : 
+                   subscription.plan === 'pro' ? 'Pro' : 
+                   subscription.plan === 'premium' ? 'Premium' : 
+                   'Enterprise'}
+                </span>
+                {subscription.cancelAtPeriodEnd && subscription.currentPeriodEnd && (
+                  <span className="text-xs text-gray-400">
+                    (Expires: {new Date(subscription.currentPeriodEnd).toLocaleDateString()})
+                  </span>
+                )}
+              </div>
+              <HistorySidebar 
+                history={history}
+                onHistoryItemClick={handleHistoryItemClick}
+              />
+            </div>
           </div>
 
           <div className="lg:col-span-9 space-y-4 sm:space-y-6">
@@ -790,10 +948,12 @@ export default function GenerateContent() {
                       disabled={!prompt.trim() || isLoading}
                       className="w-full py-4 sm:py-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-medium text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                     >
-                      {isLoading ? (
+                      {isLoading || isGenerating ? (
                         <>
                           <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 inline animate-spin" />
-                          Generating...
+                          {isGenerating && estimatedTime > 0 ? 
+                            `Generating (~${estimatedTime}s)` : 
+                            'Generating...'}
                         </>
                       ) : (
                         `Generate Content (${POINTS_PER_GENERATION} points)`
@@ -813,7 +973,14 @@ export default function GenerateContent() {
                         onClick={handleGenerate}
                         className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 w-full sm:w-auto"
                       >
-                        Generate
+                        {isGenerating ? (
+                          <span className="flex items-center justify-center space-x-2">
+                            <span>Generating{estimatedTime > 0 ? ` (~${estimatedTime}s)` : '...'}</span>
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                          </span>
+                        ) : (
+                          "Generate"
+                        )}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -828,7 +995,14 @@ export default function GenerateContent() {
             />
           </div>
         </div>
-      </main>
-    </div>
+      </motion.div>
+      </GenerateLayout>
+
+      {/* Feedback Dialog */}
+      <FeedbackDialog
+        isOpen={showFeedback}
+        onClose={() => setShowFeedback(false)}
+      />
+    </>
   );
 }

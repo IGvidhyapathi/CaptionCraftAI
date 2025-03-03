@@ -7,9 +7,10 @@ import { useToast } from "@/components/hooks/use-toast";
 
 interface PinterestMockProps {
   content: string;
+  image?: string;
 }
 
-export const PinterestMock: React.FC<PinterestMockProps> = ({ content }) => {
+export const PinterestMock: React.FC<PinterestMockProps> = ({ content, image }) => {
   const { toast } = useToast();
   const { user } = useUser();
 
@@ -34,7 +35,15 @@ export const PinterestMock: React.FC<PinterestMockProps> = ({ content }) => {
       </div>
       <div className="flex items-center justify-center mb-3">
         <div className="relative w-full h-64 overflow-hidden bg-gray-200 rounded-lg">
-          <span className="absolute inset-0 flex items-center justify-center text-gray-500">Pinterest Placeholder</span>
+          {image ? (
+            <img
+              src={image}
+              alt="Pin"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          ) : (
+            <span className="absolute inset-0 flex items-center justify-center text-gray-500">Pinterest Placeholder</span>
+          )}
         </div>
       </div>
       <div className="flex justify-between mb-3">

@@ -1,9 +1,11 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, Hash, Mic, AlertCircle } from "lucide-react";
+import { Loader2, Sparkles, Hash, Mic, AlertCircle, Wand2 } from "lucide-react";
 import VoiceTyper from "@/components/voice/voicetyper";
 import { PLATFORM_LIMITS } from "../constants";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { motion } from "framer-motion";
+import type { MotionProps } from "framer-motion";
 
 interface PromptInputProps {
   prompt: string;
@@ -40,7 +42,9 @@ export function PromptInput({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
+      <div
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+      >
         <label className="flex items-center text-sm font-medium text-gray-300">
           Your Prompt
           {isOverCharacterLimit && (
@@ -77,19 +81,40 @@ export function PromptInput({
             isOverCharacterLimit ? 'border-red-400' : 'border-gray-600'
           }`}
         />
-        <div className="absolute right-3 bottom-3">
+        <div className="absolute right-3 bottom-3 flex gap-2">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
-                <div className="p-2 transition-colors rounded-lg hover:bg-gray-700/50">
-                  <VoiceTyper 
-                    setPrompt={(value) => onPromptChange({ target: { value } } as React.ChangeEvent<HTMLTextAreaElement>)}
-                    className="text-gray-400 hover:text-gray-200"
-                  />
-                </div>
+              <TooltipTrigger asChild>
+                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                  <div className="p-2 transition-colors rounded-lg hover:bg-blue-500/20 group cursor-pointer">
+                    <VoiceTyper 
+                      setPrompt={(value) => onPromptChange({ target: { value } } as React.ChangeEvent<HTMLTextAreaElement>)}
+                      className="text-gray-400 group-hover:text-blue-400 transition-colors"
+                    />
+                  </div>
+                </motion.div>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Voice input</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="text-gray-400 hover:text-purple-400 hover:bg-purple-500/20"
+                    onClick={onGetSuggestions}
+                  >
+                    <Wand2 className="w-4 h-4" />
+                  </Button>
+                </motion.div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Get suggestions</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

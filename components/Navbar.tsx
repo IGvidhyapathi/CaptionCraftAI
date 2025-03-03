@@ -32,6 +32,7 @@ export function Navbar() {
     { name: "Resources", href: "/resources" },
     { name: "Pricing", href: "/pricing" },
     { name: "Docs", href: "/docs" },
+    { name: "✨ Feedback", href: "/feedback" },
   ];
 
   return (

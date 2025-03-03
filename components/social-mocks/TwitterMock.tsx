@@ -7,9 +7,10 @@ import Link from "next/link";
 
 interface TwitterMockProps {
   content: string[];
+  image?: string;
 }
 
-export const TwitterMock: React.FC<TwitterMockProps> = ({ content }) => {
+export const TwitterMock: React.FC<TwitterMockProps> = ({ content, image }) => {
   const { user } = useUser();
   return (
     <div className="max-w-md p-4 mx-auto text-black bg-white rounded-lg">
@@ -26,6 +27,15 @@ export const TwitterMock: React.FC<TwitterMockProps> = ({ content }) => {
       </div>
       {content.map((tweet, index) => (
         <div key={index} className="pb-4 mb-4 border-b border-gray-200">
+          {index === 0 && image && (
+            <div className="mb-3">
+              <img
+                src={image}
+                alt="Tweet image"
+                className="w-full rounded-xl object-cover max-h-[300px]"
+              />
+            </div>
+          )}
           <p>{tweet}</p>
           <div className="flex justify-between mt-3 text-gray-500">
             <MessageCircle size={18} />

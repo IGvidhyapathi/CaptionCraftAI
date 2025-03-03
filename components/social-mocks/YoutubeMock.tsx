@@ -7,9 +7,10 @@
 
     interface YoutubeMockProps {
     content: string; // Add a prop for the video description
+    image?: string; // Add a prop for the thumbnail image
     }
 
-    export const YoutubeMock: React.FC<YoutubeMockProps> = ({ content }) => {
+    export const YoutubeMock: React.FC<YoutubeMockProps> = ({ content, image }) => {
     const { toast } = useToast();
     const { user } = useUser();
 
@@ -32,10 +33,18 @@
         </div>
         <div className="flex items-center justify-center mb-3">
             <div className="relative w-full h-64 overflow-hidden bg-gray-200 rounded-lg">
-            <video 
-                className="absolute inset-0 object-cover w-full h-full"
-                controls
-            />
+              {image ? (
+                <img
+                  src={image}
+                  alt="Video Thumbnail"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <video 
+                  className="absolute inset-0 object-cover w-full h-full"
+                  controls
+                />
+              )}
             </div>
         </div>
         <div className="flex justify-between mb-3">

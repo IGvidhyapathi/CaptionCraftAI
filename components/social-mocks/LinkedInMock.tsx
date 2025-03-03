@@ -7,9 +7,10 @@ import { useToast } from "@/components//hooks/use-toast"
 
 interface LinkedInMockProps {
   content: string;
+  image?: string;
 }
 
-export const LinkedInMock: React.FC<LinkedInMockProps> = ({ content }) => {
+export const LinkedInMock: React.FC<LinkedInMockProps> = ({ content, image }) => {
   const { user } = useUser();
   const { toast } = useToast()
   const copyToClipboard = (text: string) => {
@@ -29,6 +30,15 @@ export const LinkedInMock: React.FC<LinkedInMockProps> = ({ content }) => {
           <p className="text-sm text-gray-500">{user?.firstName}• 1st</p>
         </div>
       </div>
+      {image && (
+        <div className="mb-4">
+          <img
+            src={image}
+            alt="Post image"
+            className="w-full rounded-lg object-cover max-h-[300px]"
+          />
+        </div>
+      )}
       <p className="mb-4">{content}</p>
       <div className="flex justify-between text-gray-500">
         <ThumbsUp color="#0081FB" fill="#0081FB" size={18} />

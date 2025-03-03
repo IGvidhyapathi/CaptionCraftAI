@@ -161,6 +161,50 @@ export async function getGeneratedContentHistory(
   }
 }
 
+export async function getUserSubscription(userId: string) {
+  try {
+    // First get the user's ID from their stripeCustomerId
+    const [user] = await db
+      .select({ id: Users.id })
+      .from(Users)
+      .where(eq(Users.stripeCustomerId, userId))
+      .limit(1);
+
+    if (!user) {
+      console.error(`No user found with stripeCustomerId: ${userId}`);
+      return { plan: 'free', status: 'active' }; // Default to free plan
+    }
+
+    // Get their latest subscription
+    const subscriptions = await db
+      .select({
+        plan: Subscriptions.plan,
+        status: Subscriptions.status,
+        currentPeriodEnd: Subscriptions.currentPeriodEnd,
+        cancelAtPeriodEnd: Subscriptions.cancelAtPeriodEnd
+      })
+      .from(Subscriptions)
+      .where(eq(Subscriptions.userId, user.id))
+      .orderBy(desc(Subscriptions.currentPeriodEnd))
+      .limit(1);
+
+    if (subscriptions.length === 0) {
+      return { plan: 'free', status: 'active' }; // No subscription found
+    }
+
+    const subscription = subscriptions[0];
+    return {
+      plan: subscription.plan,
+      status: subscription.status,
+      currentPeriodEnd: subscription.currentPeriodEnd,
+      cancelAtPeriodEnd: subscription.cancelAtPeriodEnd
+    };
+  } catch (error) {
+    console.error('Error fetching user subscription:', error);
+    return { plan: 'free', status: 'active' }; // Default to free plan on error
+  }
+}
+
 export async function createOrUpdateUser(
   clerkUserId: string,
   email: string,

@@ -63,14 +63,14 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
             <div className="relative z-10 w-[280px] sm:w-[260px]">
   <Link href="/generate" passHref>
-    <Button className="w-full transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] relative z-20">
-      <RainbowButton className="w-full">
+    <RainbowButton className="w-full transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] relative z-20">
+      
         <span className="inline-flex items-center justify-center whitespace-nowrap px-8 py-4 text-base md:text-lg font-semibold text-black">
           Start Crafting
           <LucideExternalLink className="w-4 h-4 md:w-5 md:h-5 ml-2" strokeWidth={2.5} />
         </span>
-      </RainbowButton>
-    </Button>
+      
+    </RainbowButton>
   </Link>
 </div>
               
